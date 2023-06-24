@@ -48,6 +48,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
         POWERSHELL -Command "Add-VMDvdDrive -VMName !virtualMachineName! -Path %3%"
     )
     POWERSHELL -Command "Set-VMFirmware !virtualMachineName! -FirstBootDevice (Get-VMFirmware !virtualMachineName!).bootOrder[2] -EnableSecureBoot Off"
+    POWERSHELL -Command "Set-VM -Name !virtualMachineName! -AutomaticStartAction Start
     IF [%~3] NEQ [] (
         POWERSHELL -Command "Start-VM -Name !virtualMachineName!"
     )

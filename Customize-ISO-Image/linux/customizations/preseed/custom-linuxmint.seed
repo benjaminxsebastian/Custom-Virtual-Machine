@@ -1,0 +1,57 @@
+# Copyright 2023 Benjamin Sebastian
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Welcome Dialog
+d-i	localechooser/languagelist	select	en
+d-i	debian-installer/locale	select	en_US.UTF-8
+
+# Keyboard Layout Dialog
+keyboard-configuration	keyboard-configuration/layoutcode	string	us
+
+# Installation Type Dialog
+d-i	partman-auto/select_disk	select	/var/lib/partman/devices/=dev=sda
+d-i	partman-auto/method	string	regular
+d-i	partman-lvm/device_remove_lvm	boolean	true
+d-i	partman-auto/choose_recipe	select	/lib/partman/recipes/30atomic
+d-i	partman-partitioning/confirm_write_new_label	boolean	true
+d-i	partman/choose_partition	select	finish
+d-i	partman/confirm	boolean	true
+d-i	partman/confirm_nooverwrite	boolean	true
+d-i	apt-setup/extras	boolean	true
+
+# Where Are You Dialog
+d-i	time/zone	select	America/Indiana/Indianapolis
+
+# Install Multimedia Codecs Dialog
+ubiquity	ubiquity/use_nonfree boolean true
+
+# Who Are You Dialog
+d-i	passwd/user-fullname	string	Benjamin Sebastian
+d-i	netcfg/get_hostname	string	LinuxMintBrowser
+d-i	passwd/username	string	<USER NAME>
+d-i	passwd/user-password	password	<USER PASSWORD>
+d-i	passwd/user-password-again	password	<USER PASSWORD>
+d-i	passwd/auto-login	boolean	true
+
+# Customizations
+ubiquity	ubiquity/success_command	string	\
+	cp -r -v -f /cdrom/customizations/custom-scripts /target/home/<USER NAME>	;\
+	chmod +x /target/home/<USER NAME>/custom-scripts/*.sh	;\
+	mv -v -f /cdrom/customizations/*customize-*-installation.* /target/home/<USER NAME>	;\
+	chmod +x /target/home/<USER NAME>/customize-*-installation.sh	;\
+	mkdir -p /target/home/<USER NAME>/.config/autostart	;\
+	mv -v -f /cdrom/customizations/launch-customize-<VIRTUALIZATION PLATFORM>-mint-xfce-installation-script.desktop /target/home/<USER NAME>/.config/autostart
+
+# Automatically Reboot
+ubiquity	ubiquity/reboot	boolean	true

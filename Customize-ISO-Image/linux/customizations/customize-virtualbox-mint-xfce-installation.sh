@@ -14,29 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t int -s 0
-
-sudo apt update
-sudo apt upgrade -y
-sudo apt autoremove -y
-sudo apt-get update
-sudo apt-get -y upgrade -y
-sudo apt-get -y autoremove -y
-sudo apt install openoffice.org-hyphenation -y
-sudo apt install mint-meta-codecs -y
-
-mkdir -p "$HOME/.config/autostart"
-sudo cp -v -f /usr/share/applications/firefox.desktop "$HOME/.config/autostart/firefox.desktop"
-firefox -preferences
-
-mintupdate
-
-launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
-if [ -f  "$launchCustomizationScriptPath" ]
+if [ "$EUID" == 0 ]
 then
-    sudo rm -rf "$launchCustomizationScriptPath"
-fi
+    echo "Please run this script from a regular user login, and DO NOT use sudo!"
+else
+    if [ -z "$1" ]
+    then
+        echo "Login user password NOT specified!"
+    elif [ -z "$2" ]
+    then
+        echo "Share name NOT specified!"
+    else
+        source "$HOME/custom-scripts/power-manager.sh"
+        source "$HOME/custom-scripts/update.sh" $1
+        #source "$HOME/custom-scripts/install-additional-packages.sh" $1
+        #source "$HOME/custom-scripts/install-pulseaudio.sh" $1
+        #source "$HOME/custom-scripts/update.sh" $1
+        source "$HOME/custom-scripts/install-firefox.sh"
+        source "$HOME/custom-scripts/virtualbox/create-shared-directory.sh" "$2"
 
-xfce4-session-logout --reboot
+        mintupdate
+
+        pavucontrol
+
+        launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
+        if [ -f  "$launchCustomizationScriptPath" ]
+        then
+            sudo rm -rf "$launchCustomizationScriptPath"
+        fi
+
+        xfce4-session-logout --reboot --fast
+    fi
+fi

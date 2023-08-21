@@ -30,13 +30,16 @@ then
 elif [ -z "$4" ]
 then
     echo "Login user password NOT specified!"
+elif [ -z "$5" ]
+then
+    echo "Share name NOT specified!"
 else
     customizeIsoImageScriptStartTime=`date +%s`
 
     exitCode=0
 
     scriptsDirectory="$(dirname "`realpath "${BASH_SOURCE[0]}"`")"
-    isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities"
+    isoUtilitiesDirectory="$scriptsDirectory/iso-utilities"
     customizationsDirectory="customizations"
     destinationDirectory="$(readlink -f $2)"
 
@@ -62,13 +65,17 @@ else
 
         if [ $exitCode == 0 ]
         then
+            sudo cp -r -v -f "$isoUtilitiesDirectory" "$destinationIsoImageDirectory"
+            sudo cp -r -v -f "$scriptsDirectory/customize-linux-mint-xfce-iso-image-for-virtualbox.sh" "$destinationIsoImageDirectory"
             sudo cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
-            sudo cp -v -f "$destinationIsoImageDirectory/customizations/preseed/custom-linuxmint.seed" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
+            sudo cp -v -f "$destinationIsoImageDirectory/$customizationsDirectory/preseed/custom-linuxmint.seed" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<VIRTUALIZATION PLATFORM>/virtualbox/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/customizations/custom-scripts/hyper-v/create-remote-desktop-shortcut.sh"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/customizations/custom-scripts/hyper-v/logout-console-session.desktop"
+            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtualbox/create-shared-directory.sh"
+            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
+            sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
+            sudo sed -i "s/<SHARE NAME>/$5/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
             #sudo cp -v -f "$destinationIsoImageDirectory/isolinux/isolinux.cfg" "$destinationIsoImageDirectory/isolinux/isolinux.cfg.original"
             #sudo sed -i "s/timeout 100/timeout 30/g" "$destinationIsoImageDirectory/isolinux/isolinux.cfg"
             #sudo sed -i 's,menu default,label automatic-install\n  menu label Automatically Install Linux Mint\n  kernel /casper/vmlinuz\n  append  file=/cdrom/preseed/custom-linuxmint.seed automatic-ubiquity boot=casper initrd=/casper/initrd.lz noprompt quiet splash --\nmenu default,' "$destinationIsoImageDirectory/isolinux/isolinux.cfg"
@@ -77,6 +84,7 @@ else
             source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "$destinationIsoImageDirectory" "$destinationDirectory"
             if [ $exitCode == 0 ]
             then
+                sudo cp -r -v -f "$destinationCustomIsoImagePath" "/home/$3/$5"
                 echo ""
                 echo "Customized ISO image: $destinationCustomIsoImagePath from: $1"
             fi

@@ -27,11 +27,9 @@ else
     else
         source "$HOME/custom-scripts/power-manager.sh"
         source "$HOME/custom-scripts/update.sh" $1
-        #source "$HOME/custom-scripts/install-additional-packages.sh" $1
-        #source "$HOME/custom-scripts/install-pulseaudio.sh" $1
-        #source "$HOME/custom-scripts/update.sh" $1
+        source "$HOME/custom-scripts/install-common-packages.sh" $1
+        source "$HOME/custom-scripts/update.sh" $1
         source "$HOME/custom-scripts/install-firefox.sh"
-        source "$HOME/custom-scripts/virtualbox/create-shared-directory.sh" "$2"
 
         mintupdate
 
@@ -43,6 +41,6 @@ else
             sudo rm -rf "$launchCustomizationScriptPath"
         fi
 
-        xfce4-session-logout --reboot --fast
+        sudo shutdown now
     fi
 fi

@@ -45,8 +45,12 @@ else
 
     mkdir -p "$2"
     sudo chmod +w "$1/isolinux/isolinux.bin"
-    #sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" "$1"
-    sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$1"
+    if [ -n "$3" ] && [ "${3^^}" = "GRUB" ]
+    then
+       sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$1"
+    else
+        sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" "$1"
+    fi
     exitCode=$?
     if [ $exitCode != 0 ]
     then

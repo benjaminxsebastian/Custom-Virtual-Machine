@@ -19,10 +19,6 @@ then
     echo "Login user password NOT specified!"
 else
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo apt install openoffice.org-hyphenation -y
-    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo apt install mint-meta-codecs -y
-    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo apt install cifs-utils -y
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo apt install xrdp -y
@@ -41,5 +37,5 @@ else
         echo "ResultActive=yes" >> "$HOME/$polkitAuthorizationFile"
         sudo mv -v -f "$HOME/$polkitAuthorizationFile" "$polkitAuthorizationFilePath"
     fi
-    sudo apt install git libpulse-dev autoconf m4 intltool build-essential dpkg-dev libtool libsndfile-dev libspeexdsp-dev libudev-dev doxygen meson ninja-build -y
+    sudo apt install libpulse-dev autoconf m4 intltool build-essential dpkg-dev libtool libsndfile-dev libspeexdsp-dev libudev-dev doxygen meson ninja-build -y
 fi

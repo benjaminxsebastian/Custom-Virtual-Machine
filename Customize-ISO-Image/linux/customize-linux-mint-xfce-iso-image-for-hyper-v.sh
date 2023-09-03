@@ -96,7 +96,7 @@ else
             #sudo sed -i 's,menu default,label automatic-install\n  menu label Automatically Install Linux Mint\n  kernel /casper/vmlinuz\n  append  file=/cdrom/preseed/custom-linuxmint.seed automatic-ubiquity boot=casper initrd=/casper/initrd.lz noprompt quiet splash --\nmenu default,' "$destinationIsoImageDirectory/isolinux/isolinux.cfg"
             sudo cp -v -f "$destinationIsoImageDirectory/boot/grub/grub.cfg" "$destinationIsoImageDirectory/boot/grub/grub.cfg.original"
             sudo sed -i '0,/menuentry "Start Linux Mint/{s,menuentry "Start Linux Mint,set default="0"\nset timeout=3\n\nmenuentry "Automatically Install Linux Mint Xfce" --class linuxmint {\n\tset gfxpayload=keep\n\tlinux	/casper/vmlinuz  file=/cdrom/preseed/custom-linuxmint.seed automatic-ubiquity boot=casper iso-scan/filename=${iso_path} noprompt quiet splash --\n\tinitrd	/casper/initrd.lz\n}\nmenuentry "Start Linux Mint,}' "$destinationIsoImageDirectory/boot/grub/grub.cfg"
-            source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "$destinationIsoImageDirectory" "$destinationDirectory"
+            source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "$destinationIsoImageDirectory" "$destinationDirectory" "GRUB"
             if [ $exitCode == 0 ]
             then
                 echo ""

@@ -16,22 +16,12 @@
 
 if [ -z "$1" ]
 then
-    echo "Share directory name NOT specified!"
+    echo "Login user password NOT specified!"
 else
-    exitCode=0
-
-    sharedDirectoryPath="$HOME/$1"
-
-    mkdir -p "$sharedDirectoryPath"
-    sudo umount -l "$sharedDirectoryPath"
-    sudo mount -t vboxsf "$1" "$sharedDirectoryPath"
-    exitCode=$?
-    if [ $exitCode != 0 ]
-    then
-        echo ""
-        echo "Error sharing directory: $sharedDirectoryPath. exitCode: $exitCode"
-    else
-        echo ""
-        echo "Shared directory: $sharedDirectoryPath"
-    fi
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install git -y
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install openoffice.org-hyphenation -y
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install mint-meta-codecs -y
 fi

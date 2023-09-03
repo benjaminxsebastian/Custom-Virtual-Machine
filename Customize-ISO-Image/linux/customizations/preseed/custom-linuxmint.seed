@@ -48,6 +48,8 @@ d-i	passwd/auto-login	boolean	true
 ubiquity	ubiquity/success_command	string	\
 	cp -r -v -f /cdrom/customizations/custom-scripts /target/home/<USER NAME>	;\
 	chmod +x /target/home/<USER NAME>/custom-scripts/*.sh	;\
+	chmod +x /target/home/<USER NAME>/custom-scripts/hyper-v/*.sh 	;\
+	chmod +x /target/home/<USER NAME>/custom-scripts/virtualbox/*.sh 	;\
 	mv -v -f /cdrom/customizations/*customize-*-installation.* /target/home/<USER NAME>	;\
 	chmod +x /target/home/<USER NAME>/customize-*-installation.sh	;\
 	mkdir -p /target/home/<USER NAME>/.config/autostart	;\

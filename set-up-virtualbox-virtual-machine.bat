@@ -22,20 +22,21 @@ IF [%~4] EQU [] SET "invalidArgument=true"
 IF [%~5] EQU [] SET "invalidArgument=true"
 IF [%~6] EQU [] SET "invalidArgument=true"
 IF [%~7] EQU [] SET "invalidArgument=true"
+IF [%~8] EQU [] SET "invalidArgument=true"
 IF [%invalidArgument%] NEQ [] (
     ECHO:
-    ECHO Usage: set-up-virtualbox-virtual-machine [Path to ISO Image] [Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share Path] [Virtual Machine Name]
+    ECHO Usage: set-up-virtualbox-virtual-machine [Path to ISO Image] [VM Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share Path] [Virtual Machine Name] [Host Temporary Directory]
     SET invalidArgument=
     EXIT /B 10001
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
-    SET "currentDirectoryPath=%~dp0."
-    SET "sharePath=%~6"
-    VBoxManage sharedfolder add "%~7" -name "%~5" -hostpath "!sharePath!"
-    VBoxManage startvm "%~7"
-    VBoxManage guestcontrol "%~7" run --exe="/home/%~3/customize-linux-mint-xfce-iso-image-for-virtualbox.sh" --username="%~3" --password="%~4" --wait-stdout --wait-stderr "customize-linux-mint-xfce-iso-image-for-virtualbox.sh/arg0" "%~1" "%~2" "%~3" "%~4" "%~5"
-
-    REM TODO - Create the virtual machine
-
+    VBoxManage sharedfolder add "%~7" -name "%~5" -hostpath "%~6" --transient
+    VBoxManage guestcontrol "%~7" run --exe="/home/%~3/custom-scripts/virtualbox/customize-linux-mint-xfce-iso-image-for-virtualbox.sh" --username="%~3" --password="%~4" --wait-stdout --wait-stderr "customize-linux-mint-xfce-iso-image-for-virtualbox.sh/arg0" "%~1" "%~2" "%~3" "%~4" "%~5"
+    SET "isoBaseName=%~1"
+    FOR %%P IN ("%~1") DO (
+        SET "isoBaseName=%%~NXP"
+    )
+    SET "destinationCustomIsoImagePath=%~6\custom-!isoBaseName!"
+    CALL %~dp0\Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" "!destinationCustomIsoImagePath!"
 ENDLOCAL

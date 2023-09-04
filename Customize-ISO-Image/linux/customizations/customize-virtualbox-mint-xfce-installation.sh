@@ -41,6 +41,9 @@ else
             sudo rm -rf "$launchCustomizationScriptPath"
         fi
 
+        launchInstallGuestAdditionsScriptPath="$HOME/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
+        sudo mv -v -f "$launchInstallGuestAdditionsScriptPath" "$HOME/.config/autostart"
+
         sudo shutdown now
     fi
 fi

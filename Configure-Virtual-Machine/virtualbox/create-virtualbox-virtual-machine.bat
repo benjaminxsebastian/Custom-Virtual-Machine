@@ -28,29 +28,28 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     SET "virtualMachineName=%~1"
     SET "virtualMachineDirectory=!USERPROFILE!\VirtualBox VMs"
     SET "dateToday=!DATE%:~4!"
+    SET "dateToday=%dateToday: =%"
     SET "dateToday=%dateToday:/=%"
     SET "timeNow=!TIME!"
+    SET "timeNow=%timeNow: =%"
     SET "timeNow=%timeNow::=.%"
     SET "temporaryVirtualMachineName=Temp!virtualMachineName!-!dateToday!-!timeNow!"
     SET "temporaryVirtualMachineDirectory=%~2\!temporaryVirtualMachineName!"
 
     VBoxManage controlvm !virtualMachineName! shutdown --force
 
-:Wait1
-    TIMEOUT /T 30
-    SET running=
+:CheckForRunningVirtualMachineAfterFirstShutdown
     FOR /F "usebackq delims==" %%R IN (`VBoxManage list runningvms`) DO (
         FOR /F "tokens=1 delims= " %%T IN ("%%R") DO (
             SET "running=%%T"
-        )
-        SET "running=!running:%~1=!"
-        IF [!running!] EQU [""] (
-            GOTO Continue1
+            SET "running=!running:%~1=!"
+            IF [!running!] EQU [""] (
+                TIMEOUT /T 10
+                GOTO CheckForRunningVirtualMachineAfterFirstShutdown
+            )
         )
     )
-    GOTO Wait1
 
-:Continue1
     VBoxManage modifyvm !virtualMachineName! --name !temporaryVirtualMachineName!
     VBoxManage movevm !temporaryVirtualMachineName! --folder "%~2" --type basic
     VBoxManage createvm --name "!virtualMachineName!" --basefolder "!virtualMachineDirectory!" --ostype Ubuntu_64 --register
@@ -64,28 +63,60 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     VBoxManage storagectl "!virtualMachineName!" --name "SATA" --add sata --controller IntelAhci
     VBoxManage storageattach "!virtualMachineName!" --storagectl "SATA" --port 1 --device 0 --type hdd --medium "!virtualMachineDirectory!/!virtualMachineName!/!virtualMachineName!.vdi"
     VBoxManage modifyvm "!virtualMachineName!" --clipboard-mode  bidirectional --memory 2048 --rtc-use-utc on --cpus 1 --pae off --vram 16 --graphicscontroller vmsvga --audio-out on --nic1 nat  --usb-ehci on
+    TIMEOUT /T 5
     VBoxManage startvm "!virtualMachineName!"
 
-:Wait2
-    TIMEOUT /T 60
-    SET running=
+    SET attempt=0
+:CheckForRunningVirtualMachineAfterSecondShutdown
     FOR /F "usebackq delims==" %%R IN (`VBoxManage list runningvms`) DO (
         FOR /F "tokens=1 delims= " %%T IN ("%%R") DO (
             SET "running=%%T"
-        )
-        SET "running=!running:%~1=!"
-        IF [!running!] EQU [""] (
-            GOTO Continue2
+            SET "running=!running:%~1=!"
+            IF [!running!] EQU [""] (
+                SET attempt=0
+                TIMEOUT /T 120
+                GOTO CheckForRunningVirtualMachineAfterSecondShutdown
+            )
         )
     )
-    GOTO Wait2
+    IF !attempt! LSS 2 (
+        SET /A attempt=!attempt!+1
+        TIMEOUT /T 10
+        GOTO CheckForRunningVirtualMachineAfterSecondShutdown
+    )
 
-:Continue2
     VBoxManage storageattach "!virtualMachineName!" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium additions
+    TIMEOUT /T 5
     VBoxManage startvm "!virtualMachineName!"
 
+:CheckForRunningVirtualMachineAfterThirdShutdown
+    FOR /F "usebackq delims==" %%R IN (`VBoxManage list runningvms`) DO (
+        FOR /F "tokens=1 delims= " %%T IN ("%%R") DO (
+            SET "running=%%T"
+            SET "running=!running:%~1=!"
+            IF [!running!] EQU [""] (
+                TIMEOUT /T 10
+                GOTO CheckForRunningVirtualMachineAfterThirdShutdown
+            )
+        )
+    )
 
-REM Run sudo /media/sbenjamin/VBox_GAs_7.0.8/VBoxLinuxAdditions.run
+    TIMEOUT /T 5
+    VBoxManage startvm "!virtualMachineName!"
+    TIMEOUT /T 240
+    VBoxManage controlvm !virtualMachineName! shutdown --force
 
+:CheckForRunningVirtualMachineAfterFourthShutdown
+    FOR /F "usebackq delims==" %%R IN (`VBoxManage list runningvms`) DO (
+        FOR /F "tokens=1 delims= " %%T IN ("%%R") DO (
+            SET "running=%%T"
+            SET "running=!running:%~1=!"
+            IF [!running!] EQU [""] (
+                TIMEOUT /T 10
+                GOTO CheckForRunningVirtualMachineAfterFourthShutdown
+            )
+        )
+    )
 
+    VBoxManage snapshot "!virtualMachineName!" take "Base Snapshot"
 ENDLOCAL

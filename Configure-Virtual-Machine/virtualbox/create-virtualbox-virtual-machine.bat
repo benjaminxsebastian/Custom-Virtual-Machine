@@ -95,7 +95,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             SET "running=%%T"
             SET "running=!running:%~1=!"
             IF [!running!] EQU [""] (
-                TIMEOUT /T 10
+                TIMEOUT /T 30
                 GOTO CheckForRunningVirtualMachineAfterThirdShutdown
             )
         )
@@ -103,7 +103,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 
     TIMEOUT /T 5
     VBoxManage startvm "!virtualMachineName!"
-    TIMEOUT /T 240
+    TIMEOUT /T 180
     VBoxManage controlvm !virtualMachineName! shutdown --force
 
 :CheckForRunningVirtualMachineAfterFourthShutdown
@@ -112,7 +112,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             SET "running=%%T"
             SET "running=!running:%~1=!"
             IF [!running!] EQU [""] (
-                TIMEOUT /T 10
+                TIMEOUT /T 30
                 GOTO CheckForRunningVirtualMachineAfterFourthShutdown
             )
         )

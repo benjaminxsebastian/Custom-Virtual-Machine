@@ -31,9 +31,20 @@ else
         source "$HOME/custom-scripts/update.sh" $1
         source "$HOME/custom-scripts/install-firefox.sh"
 
-        mintupdate
+        killall mintUpdate
+        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.updates").set_boolean("show-welcome-page", False)'
+        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.updates").set_boolean("default-repo-is-ok", True)'
+        sudo mintupdate-cli upgrade -y
 
-        pavucontrol
+        for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
+        do
+            pactl -- set-sink-volume $SINK 150%
+        done
+
+        touch "$HOME/.linuxmint/mintwelcome/norun.flag"
+
+        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.report").set_strv("ignored-reports", ["timeshift-no-setup"])'
+        killall xfce4-panel
 
         launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
         if [ -f  "$launchCustomizationScriptPath" ]

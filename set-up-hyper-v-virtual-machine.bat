@@ -36,14 +36,6 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!currentDirectoryPath!"`) DO (
         SET "currentDirectoryPath=%%P"
     )
-    CALL WSL bash -c "sudo apt install -y dos2unix"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/hyper-v/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/virtualbox/*.sh"
-    CALL WSL bash -c "dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/preseed/*"
     SET "temporaryDirectoryPath=%~2"
     FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!temporaryDirectoryPath!"`) DO (
         SET "temporaryDirectoryPath=%%P"

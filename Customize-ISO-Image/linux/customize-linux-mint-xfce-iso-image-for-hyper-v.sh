@@ -50,16 +50,6 @@ else
     scriptsDirectory="$(dirname "`realpath "${BASH_SOURCE[0]}"`")"
     isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities"
     customizationsDirectory="customizations"
-
-    sudo apt install -y dos2unix
-    dos2unix $isoUtilitiesDirectory/*.sh
-    dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh
-    dos2unix $customizationsDirectory/*.sh
-    dos2unix $customizationsDirectory/custom-scripts/*.sh
-    dos2unix $customizationsDirectory/custom-scripts/hyper-v/*.sh
-    dos2unix $customizationsDirectory/custom-scripts/virtualbox/*.sh
-    dos2unix $customizationsDirectory/preseed/*
-
     destinationDirectory="$(readlink -f $2)"
 
     echo "Customizing ISO image from: $1 into directory: $destinationDirectory"

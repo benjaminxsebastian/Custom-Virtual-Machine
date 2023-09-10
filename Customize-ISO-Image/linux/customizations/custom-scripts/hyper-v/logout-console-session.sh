@@ -23,10 +23,9 @@ then
     if [ $grepStatus == 0 ]
     then
         xfce4-session-logout --logout
-    else
-        for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
-        do
-            pactl -- set-sink-volume $SINK 150%
-        done
     fi
 fi
+for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
+do
+    pactl -- set-sink-volume $SINK 150%
+done

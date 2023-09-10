@@ -65,6 +65,6 @@ else
             sudo rm -rf "$launchCustomizationScriptPath"
         fi
 
-        xfce4-session-logout --reboot --fast
+        sudo shutdown now
     fi
 fi

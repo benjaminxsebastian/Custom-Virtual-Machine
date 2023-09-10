@@ -53,5 +53,32 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     POWERSHELL -Command "Set-VM -Name !virtualMachineName! -AutomaticStartAction Start
     IF [%~3] NEQ [] (
         POWERSHELL -Command "Start-VM -Name !virtualMachineName!"
+        GOTO CheckForRunningVirtualMachineAfterShutdown
+    ) ELSE (
+        GOTO End
     )
+
+    SET attempt=0
+:CheckForRunningVirtualMachineAfterShutdown
+    FOR /F "usebackq delims==" %%R IN (`POWERSHELL -Command "Get-VM | where {$_.State -eq 'Running'} | select Name"`) DO (
+        FOR /F "tokens=1 delims= " %%T IN ("%%R") DO (
+            SET "running=%%T"
+            SET "running=!running:%~1=!"
+            IF ["!running!"] EQU [""] (
+                SET attempt=0
+                TIMEOUT /T 120
+                GOTO CheckForRunningVirtualMachineAfterShutdown
+            )
+        )
+    )
+    IF !attempt! LSS 2 (
+        SET /A attempt=!attempt!+1
+        TIMEOUT /T 10
+        GOTO CheckForRunningVirtualMachineAfterShutdown
+    ) ELSE (
+        POWERSHELL -Command "Checkpoint-VM -Name %~1 -SnapshotName '%~1 - Base Image (!DATE! - !TIME!)'"
+    )
+
+:End
+
 ENDLOCAL

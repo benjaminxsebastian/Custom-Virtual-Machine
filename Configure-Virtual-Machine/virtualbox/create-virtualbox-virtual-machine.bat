@@ -118,5 +118,5 @@ SETLOCAL ENABLEDELAYEDEXPANSION
         )
     )
 
-    VBoxManage snapshot "!virtualMachineName!" take "Base Snapshot"
+    VBoxManage snapshot "!virtualMachineName!" take "Base Image"
 ENDLOCAL

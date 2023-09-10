@@ -41,6 +41,7 @@ else
             pactl -- set-sink-volume $SINK 150%
         done
 
+        mkdir -p "$HOME/.linuxmint/mintwelcome"
         touch "$HOME/.linuxmint/mintwelcome/norun.flag"
 
         python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.report").set_strv("ignored-reports", ["timeshift-no-setup"])'

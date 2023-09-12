@@ -59,7 +59,6 @@ else
     source "$isoUtilitiesDirectory/fetch-iso-image.sh" "$1" "$destinationDirectory"
     if [ $exitCode == 0 ]
     then
-        echo "$4" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
         source "$isoUtilitiesDirectory/extract-iso-image.sh" "$destinationIsoImagePath" "$destinationDirectory"
 
     #---
@@ -77,7 +76,6 @@ else
 
         if [ $exitCode == 0 ]
         then
-            echo "$4" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
             sudo cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
             sudo cp -v -f "$destinationIsoImageDirectory/$customizationsDirectory/preseed/custom-linuxmint.seed" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"

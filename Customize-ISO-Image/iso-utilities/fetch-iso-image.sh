@@ -47,7 +47,7 @@ else
             mv -v "$destinationIsoImagePath" "$backupDestinationIsoImagePath"
         fi
     fi
-    if [ "$downloadIsoImage" -eq true ]
+    if [ "$downloadIsoImage" = true ]
     then
         echo "Fetching ISO image from: $1 to: $destinationIsoImagePath"
         echo ""

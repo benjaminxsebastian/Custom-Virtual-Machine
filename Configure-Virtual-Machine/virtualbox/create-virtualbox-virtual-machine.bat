@@ -119,4 +119,6 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     )
 
     VBoxManage snapshot "!virtualMachineName!" take "Base Image"
+    TIMEOUT /T 5
+    VBoxManage startvm "!virtualMachineName!"
 ENDLOCAL

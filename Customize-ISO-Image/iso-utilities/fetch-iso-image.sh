@@ -32,27 +32,39 @@ else
     isoBaseName="$(eval "basename $1 .iso")"
     isoName="$isoBaseName.iso"
     destinationIsoImagePath="$2/$isoName"
+    downloadIsoImage=true
 
     if [ -f "$destinationIsoImagePath" ]
     then
-        backupDestinationIsoImagePath="$2/backup-$isoName"
-        rm -r -f "$backupDestinationIsoImagePath"
-        mv -v "$destinationIsoImagePath" "$backupDestinationIsoImagePath"
+        isoImageSize=$(wget --spider --server-response "$1" -O - 2>&1 | sed -ne '/Content-Length/{s/.*: //;p}')
+        destinationIsoImageSize=$(stat -c%s "$destinationIsoImagePath")
+        if [ "$isoImageSize" -eq "$destinationIsoImageSize" ]
+        then
+            downloadIsoImage=false
+        else
+            backupDestinationIsoImagePath="$2/backup-$isoName"
+            rm -r -f "$backupDestinationIsoImagePath"
+            mv -v "$destinationIsoImagePath" "$backupDestinationIsoImagePath"
+        fi
     fi
-
-    echo "Fetching ISO image from: $1 to: $destinationIsoImagePath"
-    echo ""
-
-    mkdir -p "$2"
-    sudo wget --show-progress -O "$destinationIsoImagePath" "$1"
-    exitCode=$?
-    if [ $exitCode != 0 ]
+    if [ "$downloadIsoImage" -eq true ]
     then
+        echo "Fetching ISO image from: $1 to: $destinationIsoImagePath"
         echo ""
-        echo "Error fetching ISO image from: $1 to: $destinationIsoImagePath. exitCode: $exitCode"
+
+        mkdir -p "$2"
+        sudo wget --show-progress -O "$destinationIsoImagePath" "$1"
+        exitCode=$?
+        if [ $exitCode != 0 ]
+        then
+            echo ""
+            echo "Error fetching ISO image from: $1 to: $destinationIsoImagePath. exitCode: $exitCode"
+        else
+            echo ""
+            echo "Fetched ISO image from: $1 to: $destinationIsoImagePath"
+        fi
     else
-        echo ""
-        echo "Fetched ISO image from: $1 to: $destinationIsoImagePath"
+        echo "Using existing ISO image at: $destinationIsoImagePath"
     fi
 
     fetchIsoImageScriptEndTime=`date +%s`

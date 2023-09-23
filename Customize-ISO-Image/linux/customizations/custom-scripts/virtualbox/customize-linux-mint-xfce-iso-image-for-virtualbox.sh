@@ -64,18 +64,6 @@ else
         then
             echo "$4" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
             source "$isoUtilitiesDirectory/extract-iso-image.sh" "$destinationIsoImagePath" "$destinationDirectory"
-
-        #---
-        # If you wish to debug this script without wanting to download and extract the distribution ISO,
-        # then please comment out the 2 calls above to the fetch-iso-image.sh and extract-iso-image.sh scripts
-        # and uncomment the lines below where the used variables are set.
-        #---
-        #isoBaseName="$(eval "basename $1 .iso")"
-        #isoName="$isoBaseName.iso"
-        #destinationIsoImageDirectory="$2/$isoBaseName"
-        #destinationIsoImagePath="$2/$isoName"
-        #---
-
             if [ $exitCode == 0 ]
             then
                 echo "$4" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null

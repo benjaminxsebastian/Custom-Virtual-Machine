@@ -31,12 +31,17 @@ IF [%invalidArgument%] NEQ [] (
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
-    VBoxManage sharedfolder add "%~7" -name "%~5" -hostpath "%~6" --transient
-    VBoxManage guestcontrol "%~7" run --exe="/home/%~3/custom-scripts/virtualbox/customize-linux-mint-xfce-iso-image-for-virtualbox.sh" --username="%~3" --password="%~4" --wait-stdout --wait-stderr "customize-linux-mint-xfce-iso-image-for-virtualbox.sh/arg0" "%~1" "%~2" "%~3" "%~4" "%~5"
     SET "isoBaseName=%~1"
     FOR %%P IN ("%~1") DO (
         SET "isoBaseName=%%~NXP"
     )
     SET "destinationCustomIsoImagePath=%~6\custom-!isoBaseName!"
+    IF NOT EXIST "!destinationCustomIsoImagePath!" (
+        VBoxManage sharedfolder remove "%~7" -name "%~5" --transient
+        VBoxManage sharedfolder add "%~7" -name "%~5" -hostpath "%~6" --transient
+        IF !ERRORLEVEL! NEQ 0 EXIT /B
+        VBoxManage guestcontrol "%~7" run --exe="/home/%~3/custom-scripts/virtualbox/customize-linux-mint-xfce-iso-image-for-virtualbox.sh" --username="%~3" --password="%~4" --wait-stdout --wait-stderr "customize-linux-mint-xfce-iso-image-for-virtualbox.sh/arg0" "%~1" "%~2" "%~3" "%~4" "%~5"
+    )
+    IF !ERRORLEVEL! NEQ 0 EXIT /B
     CALL %~dp0\Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" "!destinationCustomIsoImagePath!"
 ENDLOCAL

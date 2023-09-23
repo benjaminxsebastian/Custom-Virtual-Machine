@@ -32,19 +32,22 @@ IF [%invalidArgument%] NEQ [] (
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
-    SET "currentDirectoryPath=%~dp0."
-    FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!currentDirectoryPath!"`) DO (
-        SET "currentDirectoryPath=%%P"
-    )
-    SET "temporaryDirectoryPath=%~2"
-    FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!temporaryDirectoryPath!"`) DO (
-        SET "temporaryDirectoryPath=%%P"
-    )
-    CALL WSL bash -c "sudo apt install -y dos2unix; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/preseed/*; !currentDirectoryPath!Customize-ISO-Image/linux/customize-linux-mint-xfce-iso-image-for-hyper-v.sh \"%~1\" \"!temporaryDirectoryPath!\" \"%~3\" \"%~4\" \"%~5\" \"%~6\" \"%~7\" \"%~8\""
     SET isoBaseName=
     FOR /F "usebackq delims==" %%P IN (`WSL eval "basename !%~1! .iso"`) DO (
         SET "isoBaseName=%%P"
     )
     SET "destinationCustomIsoImagePath=%~2\custom-!isoBaseName!.iso"
+    IF NOT EXIST "!destinationCustomIsoImagePath!" (
+        SET "currentDirectoryPath=%~dp0."
+        FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!currentDirectoryPath!"`) DO (
+            SET "currentDirectoryPath=%%P"
+        )
+        SET "temporaryDirectoryPath=%~2"
+        FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!temporaryDirectoryPath!"`) DO (
+            SET "temporaryDirectoryPath=%%P"
+        )
+        CALL WSL bash -c "sudo apt install -y dos2unix; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/preseed/*; !currentDirectoryPath!Customize-ISO-Image/linux/customize-linux-mint-xfce-iso-image-for-hyper-v.sh \"%~1\" \"!temporaryDirectoryPath!\" \"%~3\" \"%~4\" \"%~5\" \"%~6\" \"%~7\" \"%~8\""
+    )
+    IF !ERRORLEVEL! NEQ 0 EXIT /B
     CALL %~dp0\Configure-Virtual-Machine\hyper-v\create-hyper-v-virtual-machine.bat "%~9" "%~2" "!destinationCustomIsoImagePath!"
 ENDLOCAL

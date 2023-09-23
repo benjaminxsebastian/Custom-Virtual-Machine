@@ -77,6 +77,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
         GOTO CheckForRunningVirtualMachineAfterShutdown
     ) ELSE (
         POWERSHELL -Command "Checkpoint-VM -Name %~1 -SnapshotName '%~1 - Base Image (!DATE! - !TIME!)'"
+        TIMEOUT /T 10
+        POWERSHELL -Command "Start-VM -Name !virtualMachineName!"
     )
 
 :End

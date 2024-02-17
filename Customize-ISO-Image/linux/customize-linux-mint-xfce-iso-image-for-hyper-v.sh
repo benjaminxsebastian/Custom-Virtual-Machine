@@ -63,7 +63,8 @@ else
         if [ $exitCode == 0 ]
         then
             sudo cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
-            sudo cp -v -f "$destinationIsoImageDirectory/$customizationsDirectory/preseed/custom-linuxmint.seed" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
+            sudo mkdir -p "$destinationIsoImageDirectory/preseed"
+            sudo cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/preseed" "$destinationIsoImageDirectory"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
             sudo sed -i "s/<VIRTUALIZATION PLATFORM>/hyper-v/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"

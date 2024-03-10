@@ -62,7 +62,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     )
     VBoxManage storagectl "!virtualMachineName!" --name "SATA" --add sata --controller IntelAhci
     VBoxManage storageattach "!virtualMachineName!" --storagectl "SATA" --port 1 --device 0 --type hdd --medium "!virtualMachineDirectory!/!virtualMachineName!/!virtualMachineName!.vdi"
-    VBoxManage modifyvm "!virtualMachineName!" --clipboard-mode  bidirectional --memory 2048 --rtc-use-utc on --cpus 1 --pae off --vram 16 --graphicscontroller vmsvga --audio-out on --nic1 nat  --usb-ehci on
+    VBoxManage modifyvm "!virtualMachineName!" --firmware efi --clipboard-mode  bidirectional --memory 2048 --rtc-use-utc on --cpus 1 --pae off --vram 16 --graphicscontroller vmsvga --audio-out on --nic1 nat  --usb-ehci on
     TIMEOUT /T 5
     VBoxManage startvm "!virtualMachineName!"
 

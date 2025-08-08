@@ -21,15 +21,12 @@ else
     if [ -z "$1" ]
     then
         echo "Login user password NOT specified!"
-    elif [ -z "$2" ]
-    then
-        echo "Share name NOT specified!"
     else
         source "$HOME/custom-scripts/power-manager.sh"
         source "$HOME/custom-scripts/update.sh" $1
         source "$HOME/custom-scripts/install-common-packages.sh" $1
         source "$HOME/custom-scripts/update.sh" $1
-        source "$HOME/custom-scripts/install-firefox.sh"
+        source "$HOME/custom-scripts/configure-firefox.sh"
 
         killall mintUpdate
         python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.updates").set_boolean("show-welcome-page", False)'
@@ -38,7 +35,7 @@ else
 
         for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
         do
-            pactl -- set-sink-volume $SINK 150%
+            pactl -- set-sink-volume $SINK 100%
         done
 
         mkdir -p "$HOME/.linuxmint/mintwelcome"
@@ -47,7 +44,7 @@ else
         python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.report").set_strv("ignored-reports", ["timeshift-no-setup"])'
         killall xfce4-panel
 
-        launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-mint-xfce-installation-script.desktop"
+        launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-linux-mint-xfce-installation-script.desktop"
         if [ -f  "$launchCustomizationScriptPath" ]
         then
             sudo rm -rf "$launchCustomizationScriptPath"

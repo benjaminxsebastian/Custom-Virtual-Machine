@@ -1,0 +1,106 @@
+# Copyright 2023 Benjamin Sebastian
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# show script's output
+exec > >(tee -a /dev/tty0) 2>&1
+
+(echo '<USER PASSWORD>'; echo '<USER PASSWORD>') | passwd
+
+setup-user -a -f "Benjamin Sebastian" <USER NAME>
+(echo '<USER PASSWORD>'; echo '<USER PASSWORD>') | passwd <USER NAME>
+
+source "/home/customizations/custom-scripts/install-additional-packages.sh"
+source "/home/customizations/custom-scripts/install-openvpn.sh"
+
+addgroup <USER NAME> abuild
+
+# Add Hyper-V tools and services
+apk add hvtools
+rc-service hv_fcopy_daemon start
+rc-service hv_kvp_daemon start
+rc-service hv_vss_daemon start
+rc-update add hv_fcopy_daemon
+rc-update add hv_kvp_daemon
+rc-update add hv_vss_daemon
+
+setup-ntp chrony
+setup-ntp none
+
+# Setup desktop
+setup-desktop xfce
+sed -i 's/#autologin-user=/autologin-user=<USER NAME>/g' "/etc/lightdm/lightdm.conf"
+
+mv -v -f "/etc/local.d/update.start.disabled" "/etc/local.d/update.start"
+mv -v -f "/etc/local.d/custom-alpinelinux-first-time.start" "/etc/local.d/custom-alpinelinux-first-time.start.disabled"
+
+# Setup pulseaudio-dev build packages
+apk del icu-data-en
+apk add dbus-dev
+apk add libsndfile-dev
+apk add libxcb-dev
+apk add libx11-dev
+apk add fftw-dev
+apk add libasyncns-dev
+apk add gtk+3.0-dev
+apk add pulseaudio-dev
+
+pulseaudioVersion=`apk search pulseaudio-dev | cut -d '-' -f 3`
+pulseaudioSourceDirectoryPath="/home/<USER NAME>/aports/community/pulseaudio/src/pulseaudio-$pulseaudioVersion"
+
+apk update
+apk upgrade
+
+
+# Setup user configuration
+su -l <USER NAME> <<EOF
+mkdir -p /home/<USER NAME>
+
+abuild-keygen -a -n
+
+cd /home/<USER NAME>
+git clone git://git.alpinelinux.org/aports
+cd /home/<USER NAME>/aports
+git pull
+
+cd /home/<USER NAME>/aports/community/pulseaudio
+abuild fetch
+abuild unpack
+abuild deps
+abuild prepare
+abuild build
+abuild rootpkg
+cp $pulseaudioSourceDirectoryPath/output/config.h $pulseaudioSourceDirectoryPath
+
+mkdir -p /home/<USER NAME>/.config/autostart
+cp -v -f /usr/share/applications/firefox.desktop /home/<USER NAME>/.config/autostart
+
+cp -r -v -f /home/customizations/custom-scripts /home/<USER NAME>
+chmod +x /home/<USER NAME>/custom-scripts/*.sh
+chmod +x /home/<USER NAME>/custom-scripts/hyper-v/*.sh
+chmod +x /home/<USER NAME>/custom-scripts/virtualbox/*.sh
+cp -v -f /home/customizations/*customize-*-installation.* /home/<USER NAME>
+chmod +x /home/<USER NAME>/customize-*-installation.sh
+cp -v -f /home/customizations/launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop /home/<USER NAME>/.config/autostart
+EOF
+
+
+source "/home/<USER NAME>/custom-scripts/install-pulseaudio.sh" "$pulseaudioSourceDirectoryPath"
+bash "/home/<USER NAME>/custom-scripts/hyper-v/setup-remote-desktop.sh" "<USER PASSWORD>" "<SHARE NAME>" "<SHARE USER NAME>" "<SHARE USER PASSWORD>" "<SHARE USER DOMAIN>"
+
+echo 'permit nopass <USER NAME> as root' >> "/etc/doas.d/doas.conf"
+
+apk update
+apk upgrade
+
+reboot

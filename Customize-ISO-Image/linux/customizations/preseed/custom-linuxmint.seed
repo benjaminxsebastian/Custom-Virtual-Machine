@@ -53,7 +53,7 @@ ubiquity	ubiquity/success_command	string	\
 	mv -v -f /cdrom/customizations/*customize-*-installation.* /target/home/<USER NAME>	;\
 	chmod +x /target/home/<USER NAME>/customize-*-installation.sh	;\
 	mkdir -p /target/home/<USER NAME>/.config/autostart	;\
-	mv -v -f /cdrom/customizations/launch-customize-<VIRTUALIZATION PLATFORM>-mint-xfce-installation-script.desktop /target/home/<USER NAME>/.config/autostart
+	mv -v -f /cdrom/customizations/launch-customize-<VIRTUALIZATION PLATFORM>-linux-mint-xfce-installation-script.desktop /target/home/<USER NAME>/.config/autostart
 
 # Automatically Reboot
 ubiquity	ubiquity/reboot	boolean	true

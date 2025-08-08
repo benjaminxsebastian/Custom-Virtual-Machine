@@ -17,9 +17,12 @@ REM // limitations under the License.
 SET invalidArgument=
 IF [%~1] EQU [] SET "invalidArgument=true"
 IF [%~2] EQU [] SET "invalidArgument=true"
+IF [%~3] EQU [] SET "invalidArgument=true"
+IF [%~4] EQU [] SET "invalidArgument=true"
+IF [%~5] EQU [] SET "invalidArgument=true"
 IF [%invalidArgument%] NEQ [] (
     ECHO:
-    ECHO Usage: create-virtualbox-virtual-machine [Virtual Machine Name] [Temporary Directory] [Path to Customized Install ISO]
+    ECHO Usage: create-virtualbox-virtual-machine [Virtual Machine Name] [Temporary Directory] [Memory Size In GB] [Hard Drive Size In GB] [Path to Customized Install ISO]
     SET invalidArgument=
     EXIT /B 11001
 )
@@ -35,6 +38,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     SET "timeNow=%timeNow::=.%"
     SET "temporaryVirtualMachineName=Temp!virtualMachineName!-!dateToday!-!timeNow!"
     SET "temporaryVirtualMachineDirectory=%~2\!temporaryVirtualMachineName!"
+    SET /A memorySizeInMb=%3 * 1024
+    SET /A hardDriveSizeInMb=%4 * 1024
 
     VBoxManage controlvm !virtualMachineName! shutdown --force
 
@@ -53,16 +58,16 @@ SETLOCAL ENABLEDELAYEDEXPANSION
     VBoxManage modifyvm !virtualMachineName! --name !temporaryVirtualMachineName!
     VBoxManage movevm !temporaryVirtualMachineName! --folder "%~2" --type basic
     VBoxManage createvm --name "!virtualMachineName!" --basefolder "!virtualMachineDirectory!" --ostype Ubuntu_64 --register
-    VBoxManage createmedium disk --filename "!virtualMachineDirectory!/!virtualMachineName!/!virtualMachineName!.vdi" --size 25600 --format VDI --variant Fixed
+    VBoxManage createmedium disk --filename "!virtualMachineDirectory!/!virtualMachineName!/!virtualMachineName!.vdi" --size !hardDriveSizeInMb! --format VDI --variant Fixed
     VBoxManage storagectl "!virtualMachineName!" --name "IDE" --add ide --controller PIIX4 --hostiocache on
-    IF [%~3] EQU [] (
+    IF [%~5] EQU [] (
         VBoxManage storageattach "!virtualMachineName!" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium emptydrive
     ) ELSE (
-        VBoxManage storageattach "!virtualMachineName!" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "%~3"
+        VBoxManage storageattach "!virtualMachineName!" --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "%~5"
     )
     VBoxManage storagectl "!virtualMachineName!" --name "SATA" --add sata --controller IntelAhci
     VBoxManage storageattach "!virtualMachineName!" --storagectl "SATA" --port 1 --device 0 --type hdd --medium "!virtualMachineDirectory!/!virtualMachineName!/!virtualMachineName!.vdi"
-    VBoxManage modifyvm "!virtualMachineName!" --firmware efi --clipboard-mode  bidirectional --memory 2048 --rtc-use-utc on --cpus 1 --pae off --vram 16 --graphicscontroller vmsvga --audio-out on --nic1 nat  --usb-ehci on
+    VBoxManage modifyvm "!virtualMachineName!" --firmware efi --clipboard-mode  bidirectional --memory !memorySizeInMb! --rtc-use-utc on --cpus 1 --pae off --vram 16 --graphicscontroller vmsvga --audio-out on --nic1 nat  --usb-ehci on
     TIMEOUT /T 5
     VBoxManage startvm "!virtualMachineName!"
 

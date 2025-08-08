@@ -40,7 +40,7 @@ else
         source "$HOME/custom-scripts/install-additional-packages.sh" $1
         source "$HOME/custom-scripts/install-pulseaudio.sh" $1
         source "$HOME/custom-scripts/update.sh" $1
-        source "$HOME/custom-scripts/install-firefox.sh"
+        source "$HOME/custom-scripts/configure-firefox.sh"
         source "$HOME/custom-scripts/hyper-v/setup-remote-desktop.sh" "$1" "$2" "$3" "$4" "$5"
 
         killall mintUpdate
@@ -50,7 +50,7 @@ else
 
         for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
         do
-            pactl -- set-sink-volume $SINK 150%
+            pactl -- set-sink-volume $SINK 100%
         done
 
         mkdir -p "$HOME/.linuxmint/mintwelcome"
@@ -59,7 +59,7 @@ else
         python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.report").set_strv("ignored-reports", ["timeshift-no-setup"])'
         killall xfce4-panel
         
-        launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-hyper-v-mint-xfce-installation-script.desktop"
+        launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-hyper-v-linux-mint-xfce-installation-script.desktop"
         if [ -f  "$launchCustomizationScriptPath" ]
         then
             sudo rm -rf "$launchCustomizationScriptPath"

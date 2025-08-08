@@ -20,8 +20,11 @@ exitCode=2
 
 if [ -z "$1" ]
 then
-    echo "Path to ISO image directory NOT specified!"
+    echo "Path to ISO boot directory NOT specified!"
 elif [ -z "$2" ]
+then
+    echo "Path to ISO image directory NOT specified!"
+elif [ -z "$3" ]
 then
     echo "Destination ISO image directory path NOT specified!"
 else
@@ -29,36 +32,31 @@ else
 
     exitCode=0
 
-    isoBaseName="$(eval "basename $1")"
+    isoBaseName="$(eval "basename $2")"
     customIsoName="custom-$isoBaseName.iso"
-    destinationCustomIsoImagePath="$2/$customIsoName"
+    destinationCustomIsoImagePath="$3/$customIsoName"
 
     if [ -f "$destinationCustomIsoImagePath" ]
     then
-        backupDestinationCustomIsoImagePath="$2/backup-$customIsoName"
+        backupDestinationCustomIsoImagePath="$3/backup-$customIsoName"
         rm -r -f "$backupDestinationCustomIsoImagePath"
         mv -v "$destinationCustomIsoImagePath" "$backupDestinationCustomIsoImagePath"
     fi
 
-    echo "Creating custom ISO image: $destinationCustomIsoImagePath from: $1"
+    echo "Creating custom ISO image: $destinationCustomIsoImagePath from: $2 (with boot directory: $1)"
     echo ""
 
-    mkdir -p "$2"
-    sudo chmod +w "$1/isolinux/isolinux.bin"
-    if [ -n "$3" ] && [ "${3^^}" = "GRUB" ]
-    then
-        sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$1"
-    else
-        sudo mkisofs -o "$destinationCustomIsoImagePath" -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" "$1"
-    fi
+    mkdir -p "$3"
+    sudo chmod +w "$2/$1/isolinux.bin"
+    sudo mkisofs -o "$destinationCustomIsoImagePath" -b  $1/isolinux.bin -c $1/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$2"
     exitCode=$?
     if [ $exitCode != 0 ]
     then
         echo ""
-        echo "Error creating custom ISO image: $destinationCustomIsoImagePath from: $1. exitCode: $exitCode"
+        echo "Error creating custom ISO image: $destinationCustomIsoImagePath from: $2 (with boot directory: $1). exitCode: $exitCode"
     else
         echo ""
-        echo "Created custom ISO image: $destinationCustomIsoImagePath from: $1"
+        echo "Created custom ISO image: $destinationCustomIsoImagePath from: $2 (with boot directory: $1)"
     fi
 
     createBootableIsoImageScriptEndTime=`date +%s`

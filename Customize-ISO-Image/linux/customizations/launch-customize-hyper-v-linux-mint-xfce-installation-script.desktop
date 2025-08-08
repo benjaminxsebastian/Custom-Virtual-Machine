@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=launch-customization-script
+Comment=
+Exec=/home/<USER NAME>/customize-hyper-v-linux-mint-xfce-installation.sh "<USER PASSWORD>" "<SHARE NAME>" "<SHARE USER NAME>" "<SHARE USER PASSWORD>" "<SHARE USER DOMAIN>"
+RunHook=0
+StartupNotify=false
+Terminal=true
+Hidden=false

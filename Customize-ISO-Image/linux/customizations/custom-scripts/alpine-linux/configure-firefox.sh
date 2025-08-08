@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Copyright 2023 Benjamin Sebastian
 # 
@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t int -s 0
+sleep 3
+killall firefox
+echo 'user_pref("browser.startup.homepage", "https://www.google.com");' > "/home/<USER NAME>/user.js"
+mv -v -f "/home/<USER NAME>/user.js" /home/<USER NAME>/.mozilla/firefox/*.default-release
+firefox &
+sleep 5
+killall firefox

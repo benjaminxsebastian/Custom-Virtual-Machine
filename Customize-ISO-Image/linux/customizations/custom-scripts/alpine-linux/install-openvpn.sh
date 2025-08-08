@@ -14,18 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sessionInformation=$(who)
-if ! [ -z "$sessionInformation" ]
-then
-    grepStatus=0
-    inxi -F | grep -i -q XFCE
-    grepStatus=$?
-    if [ $grepStatus == 0 ]
-    then
-        xfce4-session-logout --logout
-    fi
-fi
-for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
-do
-    pactl -- set-sink-volume $SINK 150%
-done
+apk add openvpn
+
+rc-update add openvpn default
+modprobe tun
+echo 'tun' >> "/etc/modules-load.d/tun.conf"
+echo 'net.ipv4.ip_forward = 1' >> "/etc/sysctl.d/ipv4.conf"
+sysctl -p "/etc/sysctl.d/ipv4.conf"

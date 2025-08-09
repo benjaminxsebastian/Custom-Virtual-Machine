@@ -48,7 +48,7 @@ else
     exitCode=0
 
     scriptsDirectory="$(dirname "`realpath "${BASH_SOURCE[0]}"`")"
-    isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities"
+    isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities/debian"
     customizationsDirectory="customizations"
     destinationDirectory="$(readlink -f $2)"
 

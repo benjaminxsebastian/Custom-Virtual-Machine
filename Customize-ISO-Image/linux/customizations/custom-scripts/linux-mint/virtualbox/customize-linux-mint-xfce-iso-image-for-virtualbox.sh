@@ -50,7 +50,7 @@ else
 
         scriptsDirectory="/home/$3/Custom-Virtual-Machine/Customize-ISO-Image/linux"
         cd "$scriptsDirectory"
-        isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities"
+        isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities/debian"
         customizationsDirectory="customizations"
         destinationDirectory="$(readlink -f $2)"
 

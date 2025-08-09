@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+apk add sed
+apk add cdrkit
 apk add git
 apk add autoconf
 apk add automake

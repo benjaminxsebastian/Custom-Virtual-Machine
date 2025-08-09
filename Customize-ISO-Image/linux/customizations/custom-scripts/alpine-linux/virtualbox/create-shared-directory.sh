@@ -16,15 +16,18 @@
 
 if [ -z "$1" ]
 then
+    echo "Login user name NOT specified!"
+elif [ -z "$2" ]
+then
     echo "Share directory name NOT specified!"
 else
     exitCode=0
 
-    sharedDirectoryPath="$HOME/$1"
+    sharedDirectoryPath="/home/$1/$2"
 
     mkdir -p "$sharedDirectoryPath"
-    doas umount -l "$sharedDirectoryPath"
-    doas mount -t vboxsf "$1" "$sharedDirectoryPath"
+    umount -l "$sharedDirectoryPath"
+    mount -t vboxsf "$2" "$sharedDirectoryPath"
     exitCode=$?
     if [ $exitCode != 0 ]
     then

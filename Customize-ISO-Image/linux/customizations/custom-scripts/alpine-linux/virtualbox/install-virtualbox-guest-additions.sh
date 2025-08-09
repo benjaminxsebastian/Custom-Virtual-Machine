@@ -15,9 +15,13 @@
 # limitations under the License.
 
 doas mkdir /mnt/cdrom
-doas mount /dev/sr0 /mnt/cdrom
+doas mount -t iso9660 /dev/sr0 /mnt/cdrom
 doas /mnt/cdrom/VBoxLinuxAdditions.run
 doas umount /mnt/cdrom
+doas apk add virtualbox-guest-additions
+
+doas rc-service virtualbox-guest-additions start
+doas rc-update add virtualbox-guest-additions boot
 
 launchInstallGuestAdditionsScriptPath="$HOME/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
 if [ -f  "$launchInstallGuestAdditionsScriptPath" ]

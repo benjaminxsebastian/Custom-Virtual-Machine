@@ -31,8 +31,11 @@ IF [%invalidArgument%] NEQ [] (
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
+    SET "username=root"
     SET memorySizeInGb=2
     SET hardDriveSizeInGb=10
+    SET "audioDriver=dsound"
+    SET "audioController=hda"
     SET "isoBaseName=%~1"
     FOR %%P IN ("%~1") DO (
         SET "isoBaseName=%%~NXP"
@@ -45,13 +48,16 @@ SETLOCAL ENABLEDELAYEDEXPANSION
         SET scriptName=
         ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
         IF !ERRORLEVEL! EQU 0 (
+            SET "username=%~3"
             SET memorySizeInGb=4
             SET hardDriveSizeInGb=25
+            SET "audioDriver=default"
+            SET "audioController=ac97"
             SET "scriptName=customize-linux-mint-xfce-iso-image-for-virtualbox.sh"
         ) ELSE (
             ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
             IF !ERRORLEVEL! EQU 0 (
-                SET "scriptName=customize-alpine-linux-xfce-iso-image-for-virtualbox-v.sh"
+                SET "scriptName=customize-alpine-linux-xfce-iso-image-for-virtualbox.sh"
             )
         )
         IF [!scriptName!] EQU [] (
@@ -59,8 +65,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             ECHO Unsupported Linux type!
             EXIT /B 1
         )
-        VBoxManage guestcontrol "%~7" run --exe "/home/%~3/custom-scripts/virtualbox/!scriptName!" --username="%~3" --password="%~4" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5"
+        VBoxManage guestcontrol "%~7" run --exe "/home/%~3/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~4" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5"
     )
     IF !ERRORLEVEL! NEQ 0 EXIT /B
-    CALL %~dp0\Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!destinationCustomIsoImagePath!"
+    CALL %~dp0\Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!audioDriver!" "!audioController!" "!destinationCustomIsoImagePath!"
 ENDLOCAL

@@ -36,11 +36,9 @@ then
 else
     customizeIsoImageScriptStartTime=`date +%s`
 
-    echo "permit nopass $3 as root" >> "/etc/doas.d/doas.conf"
-
     exitCode=0
 
-    source "/home/$3/custom-scripts/virtualbox/create-shared-directory.sh" "$5"
+    source "/home/$3/custom-scripts/virtualbox/create-shared-directory.sh" "$3" "$5"
     if [ $exitCode == 0 ]
     then
         mkdir -p "$2"
@@ -49,7 +47,7 @@ else
 
         scriptsDirectory="/home/$3/Custom-Virtual-Machine/Customize-ISO-Image/linux"
         cd "$scriptsDirectory"
-        isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities"
+        isoUtilitiesDirectory="$scriptsDirectory/../iso-utilities/alpine-linux"
         customizationsDirectory="customizations"
         destinationDirectory="$(readlink -f $2)"
 
@@ -63,33 +61,30 @@ else
             source "$isoUtilitiesDirectory/extract-iso-image.sh" "$destinationIsoImagePath" "$destinationDirectory"
             if [ $exitCode == 0 ]
             then
-                doas cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
+                cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
                 cd "$destinationIsoImageDirectory/customizations"
-                doas cp -v -f "$destinationIsoImageDirectory/boot/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt.original"
+                cp -v -f "$destinationIsoImageDirectory/boot/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt.original"
                 zcat "$destinationIsoImageDirectory/boot/initramfs-virt" | cpio -idm
-                doas sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-virtualbox-alpine-linux-xfce-installation.sh"
-                doas cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux/." "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts"
-                doas rm -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux"
-                doas sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
-                doas sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
-                doas cp -v -f "$destinationIsoImageDirectory/customizations/init" "$destinationIsoImageDirectory/customizations/init.original"
-                doas sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/virtualbox/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/customizations/init"
-                doas rm -r -f "$destinationIsoImageDirectory/boot/initramfs-virt"
+                sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-virtualbox-alpine-linux-xfce-installation.sh"
+                cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux/." "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts"
+                rm -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux"
+                sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
+                sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
+                cp -v -f "$destinationIsoImageDirectory/customizations/init" "$destinationIsoImageDirectory/customizations/init.original"
+                sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/virtualbox/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/customizations/init"
+                rm -r -f "$destinationIsoImageDirectory/boot/initramfs-virt"
                 find . | cpio -o -H newc | gzip -1 > "$destinationIsoImageDirectory/boot/initramfs-virt"
                 cd "$scriptsDirectory/.."
                 source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "boot/syslinux" "$destinationIsoImageDirectory" "$destinationDirectory"
                 if [ $exitCode == 0 ]
                 then
-                    doas cp -r -v -f "$destinationCustomIsoImagePath" "$sharedDirectoryPath"
+                    cp -r -v -f "$destinationCustomIsoImagePath" "$sharedDirectoryPath"
                     echo ""
                     echo "Customized ISO image: $destinationCustomIsoImagePath from: $1"
                 fi
             fi
         fi
     fi
-
-    doas sed -i "s/permit nopass $3 as root//g" "/etc/doas.d/doas.conf"
-
     customizeIsoImageScriptEndTime=`date +%s`
     echo ""
     echo "Runtime [${BASH_SOURCE[0]}]:" $((customizeIsoImageScriptEndTime-customizeIsoImageScriptStartTime)) "seconds."

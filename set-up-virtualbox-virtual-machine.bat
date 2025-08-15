@@ -68,5 +68,5 @@ SETLOCAL ENABLEDELAYEDEXPANSION
         VBoxManage guestcontrol "%~7" run --exe "/home/%~3/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~4" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5"
     )
     IF !ERRORLEVEL! NEQ 0 EXIT /B
-    CALL %~dp0\Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!audioDriver!" "!audioController!" "!destinationCustomIsoImagePath!"
+    CALL %~dp0Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!audioDriver!" "!audioController!" "!destinationCustomIsoImagePath!"
 ENDLOCAL

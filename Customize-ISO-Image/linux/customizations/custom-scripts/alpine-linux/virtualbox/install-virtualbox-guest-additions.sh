@@ -19,9 +19,12 @@ doas mount -t iso9660 /dev/sr0 /mnt/cdrom
 doas /mnt/cdrom/VBoxLinuxAdditions.run
 doas umount /mnt/cdrom
 doas apk add virtualbox-guest-additions
+doas apk add virtualbox-guest-additions-x11
 
 doas rc-service virtualbox-guest-additions start
 doas rc-update add virtualbox-guest-additions boot
+doas rc-service virtualbox-drm-client start
+doas rc-update add virtualbox-drm-client default
 
 launchInstallGuestAdditionsScriptPath="$HOME/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
 if [ -f  "$launchInstallGuestAdditionsScriptPath" ]

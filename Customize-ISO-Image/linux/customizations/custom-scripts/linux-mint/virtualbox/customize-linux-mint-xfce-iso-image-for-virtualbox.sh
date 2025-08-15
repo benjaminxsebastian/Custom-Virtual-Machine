@@ -73,6 +73,7 @@ else
                 sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
                 sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
                 sudo sed -i "s/<VIRTUALIZATION PLATFORM>/virtualbox/g" "$destinationIsoImageDirectory/preseed/custom-linuxmint.seed"
+                sudo cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/linux-mint/." "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts"
                 sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
                 sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
                 sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtualbox-linux-mint-xfce-installation-script.desktop"

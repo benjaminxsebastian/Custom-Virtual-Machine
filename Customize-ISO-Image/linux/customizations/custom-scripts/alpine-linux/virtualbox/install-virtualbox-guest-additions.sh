@@ -26,14 +26,8 @@ doas rc-update add virtualbox-guest-additions boot
 doas rc-service virtualbox-drm-client start
 doas rc-update add virtualbox-drm-client default
 
-launchInstallGuestAdditionsScriptPath="$HOME/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
-if [ -f  "$launchInstallGuestAdditionsScriptPath" ]
-then
-    doas rm -rf "$launchInstallGuestAdditionsScriptPath"
-fi
-
-doas sed -i 's/autologin-user=/#autologin-user=/g' "/etc/lightdm/lightdm.conf"
-doas sed -i 's/permit nopass <USER NAME> as root//g' "/etc/doas.d/doas.conf" &
-sleep 3
-
-doas poweroff
+#launchInstallGuestAdditionsScriptPath="$HOME/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
+#if [ -f  "$launchInstallGuestAdditionsScriptPath" ]
+#then
+#    doas rm -rf "$launchInstallGuestAdditionsScriptPath"
+#fi

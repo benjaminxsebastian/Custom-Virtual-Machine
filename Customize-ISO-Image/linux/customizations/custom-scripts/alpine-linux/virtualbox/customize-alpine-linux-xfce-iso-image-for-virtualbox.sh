@@ -66,6 +66,7 @@ else
                 cp -v -f "$destinationIsoImageDirectory/boot/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt.original"
                 zcat "$destinationIsoImageDirectory/boot/initramfs-virt" | cpio -idm
                 sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-hyper-v-alpine-linux-xfce-installation.sh"
+                sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-virtualbox-alpine-linux-xfce-installation.sh"
                 cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux/." "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts"
                 sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/power-manager.sh"
                 sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/configure-firefox.sh"

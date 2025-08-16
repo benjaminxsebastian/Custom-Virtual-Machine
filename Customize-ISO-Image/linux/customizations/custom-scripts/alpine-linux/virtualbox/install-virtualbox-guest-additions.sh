@@ -36,4 +36,4 @@ doas sed -i 's/autologin-user=/#autologin-user=/g' "/etc/lightdm/lightdm.conf"
 doas sed -i 's/permit nopass <USER NAME> as root//g' "/etc/doas.d/doas.conf" &
 sleep 3
 
-doas shutdown now
+doas poweroff

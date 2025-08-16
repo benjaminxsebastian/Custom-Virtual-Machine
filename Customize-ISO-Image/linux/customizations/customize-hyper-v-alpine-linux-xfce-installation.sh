@@ -14,15 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$HOME/custom-scripts/power-manager.sh"
-source "$HOME/custom-scripts/configure-firefox.sh"
+source "/home/<USER NAME>/custom-scripts/power-manager.sh"
+source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
 
 for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
 do
     pactl -- set-sink-volume $SINK 100%
 done
 
-launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop"
+launchCustomizationScriptPath="/home/<USER NAME>/.config/autostart/launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop"
 if [ -f  "$launchCustomizationScriptPath" ]
 then
     rm -rf "$launchCustomizationScriptPath"

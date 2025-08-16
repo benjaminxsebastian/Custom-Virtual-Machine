@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$HOME/custom-scripts/power-manager.sh"
-source "$HOME/custom-scripts/configure-firefox.sh"
+source "/home/<USER NAME>/custom-scripts/power-manager.sh"
+source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
 
 launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
 if [ -f  "$launchCustomizationScriptPath" ]
@@ -23,7 +23,7 @@ then
     rm -rf "$launchCustomizationScriptPath"
 fi
 
-launchInstallGuestAdditionsScriptPath="$HOME/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
+launchInstallGuestAdditionsScriptPath="/home/<USER NAME>/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
 doas mv -v -f "$launchInstallGuestAdditionsScriptPath" "$HOME/.config/autostart"
 
 xfce4-session-logout --halt

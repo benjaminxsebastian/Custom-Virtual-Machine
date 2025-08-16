@@ -63,12 +63,11 @@ else
         if [ $exitCode == 0 ]
         then
             sudo cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
-            cd "$destinationIsoImageDirectory/customizations"
+            cd "$destinationIsoImageDirectory/$customizationsDirectory"
             sudo cp -v -f "$destinationIsoImageDirectory/boot/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt.original"
             zcat "$destinationIsoImageDirectory/boot/initramfs-virt" | cpio -idm
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-hyper-v-alpine-linux-xfce-installation.sh"
             sudo cp -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux/." "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts"
-            sudo rm -r -v -f "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/alpine-linux"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/power-manager.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/configure-firefox.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/install-pulseaudio.sh"
@@ -82,8 +81,8 @@ else
             sudo sed -i "s/<SHARE USER PASSWORD>/$7/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
             sudo sed -i "s/<SHARE USER DOMAIN>/$8/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop"
-            sudo cp -v -f "$destinationIsoImageDirectory/customizations/init" "$destinationIsoImageDirectory/customizations/init.original"
-            sudo sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/customizations/init"
+            sudo cp -v -f "$destinationIsoImageDirectory/$customizationsDirectory/init" "$destinationIsoImageDirectory/$customizationsDirectory/init.original"
+            sudo sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/$customizationsDirectory/init"
             sudo rm -r -f "$destinationIsoImageDirectory/boot/initramfs-virt"
             find . | cpio -o -H newc | gzip -1 > "$destinationIsoImageDirectory/boot/initramfs-virt"
             cd "$scriptsDirectory/.."

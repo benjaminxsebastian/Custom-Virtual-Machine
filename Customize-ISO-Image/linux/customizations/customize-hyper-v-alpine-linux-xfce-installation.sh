@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "/home/<USER NAME>/custom-scripts/power-manager.sh"
-source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
+source "$HOME/custom-scripts/power-manager.sh"
+source "$HOME/custom-scripts/configure-firefox.sh"
 
 for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
 do

@@ -19,11 +19,6 @@ while ! pgrep "firefox" > /dev/null; do
   sleep 1
 done
 firefoxFolder=`grep -i "default-release" .mozilla/firefox/installs.ini | cut -d '=' -f 2`
-#while [ ! -d "/home/sbenjamin/.mozilla/firefox/$firefoxFolder" ]; do
-#  echo 'Waiting for firefox default-release folder to get created ...'
-#  sleep 1
-#  firefoxFolder=`grep -i "default-release" .mozilla/firefox/installs.ini | cut -d '=' -f 2`
-#done
 firefoxFiles=`find "/home/sbenjamin/.mozilla/firefox/$firefoxFolder" -maxdepth 1 -type f | wc -l`
 while [ "$firefoxFiles" -le "30" ]; do
   echo "Waiting for firefox to finish initializing ..."

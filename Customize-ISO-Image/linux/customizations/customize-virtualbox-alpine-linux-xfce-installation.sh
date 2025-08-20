@@ -16,7 +16,6 @@
 
 source "/home/<USER NAME>/custom-scripts/power-manager.sh"
 source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
-source "/home/<USER NAME>/custom-scripts/virtualbox/install-virtualbox-guest-additions.sh"
 
 launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
 if [ -f  "$launchCustomizationScriptPath" ]
@@ -24,7 +23,7 @@ then
     rm -rf "$launchCustomizationScriptPath"
 fi
 
-doas sed -i 's/permit nopass <USER NAME> as root//g' "/etc/doas.d/doas.conf" &
+doas sed -i 's/permit nopass <USER NAME> as root//g' "/etc/doas.d/doas.conf"
 sleep 3
 
 xfce4-session-logout --halt

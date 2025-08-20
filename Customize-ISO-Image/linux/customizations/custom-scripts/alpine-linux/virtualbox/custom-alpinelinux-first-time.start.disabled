@@ -25,6 +25,18 @@ source "/home/customizations/custom-scripts/install-openvpn.sh"
 
 addgroup <USER NAME> abuild
 
+# Add Virtualbox guest additions
+mkdir /mnt/cdrom
+mount -t iso9660 /dev/sr0 /mnt/cdrom
+/mnt/cdrom/VBoxLinuxAdditions.run
+umount /mnt/cdrom
+apk add virtualbox-guest-additions
+apk add virtualbox-guest-additions-x11
+rc-service virtualbox-guest-additions start
+rc-update add virtualbox-guest-additions boot
+rc-service virtualbox-drm-client start
+rc-update add virtualbox-drm-client default
+
 setup-ntp chrony
 setup-ntp none
 

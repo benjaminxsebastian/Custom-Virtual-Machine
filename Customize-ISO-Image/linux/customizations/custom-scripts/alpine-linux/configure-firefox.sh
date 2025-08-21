@@ -31,5 +31,5 @@ killall firefox
 echo 'user_pref("browser.startup.homepage", "https://www.google.com");' > "/home/<USER NAME>/user.js"
 mv -v -f "/home/<USER NAME>/user.js" /home/<USER NAME>/.mozilla/firefox/*.default-release
 firefox &
-sleep 5
+sleep 10
 killall firefox

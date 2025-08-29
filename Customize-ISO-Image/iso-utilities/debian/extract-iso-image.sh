@@ -38,8 +38,8 @@ else
     if [ -d "$destinationIsoImageDirectory" ]
     then
         backupDestinationIsoImageDirectory="$2/backup-$isoBaseName"
-        rm -r -f "$backupDestinationIsoImageDirectory"
-        mv -v "$destinationIsoImageDirectory" "$backupDestinationIsoImageDirectory"
+        sudo rm -r -f "$backupDestinationIsoImageDirectory"
+        sudo mv -v "$destinationIsoImageDirectory" "$backupDestinationIsoImageDirectory"
     fi
 
     echo "Extracting ISO image from: $1 into: $destinationIsoImageDirectory"

@@ -47,8 +47,12 @@ else
     echo ""
 
     mkdir -p "$3"
-    sudo chmod +w "$2/$1/isolinux.bin"
-    sudo mkisofs -o "$destinationCustomIsoImagePath" -b  $1/isolinux.bin -c $1/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$2"
+    if [[ "$1" == *"efi.img"* && "$2" == *"aarch64"* ]]; then
+        sudo xorrisofs -output "$destinationCustomIsoImagePath" -efi-boot-part --efi-boot-image -e $1 -no-emul-boot -joliet -rational-rock -full-iso9660-filenames -follow-links "$2"
+    else
+        sudo chmod +w "$2/$1/isolinux.bin"
+        sudo mkisofs -o "$destinationCustomIsoImagePath" -b  $1/isolinux.bin -c $1/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$2"
+    fi
     exitCode=$?
     if [ $exitCode != 0 ]
     then

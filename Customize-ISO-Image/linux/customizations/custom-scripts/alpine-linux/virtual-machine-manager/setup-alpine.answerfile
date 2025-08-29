@@ -1,0 +1,46 @@
+# Answer file for setup-alpine script
+# If you don't want to use a certain option, then comment it out
+
+# Use US layout with US variant
+KEYMAPOPTS="us us"
+
+# Set hostname
+HOSTNAMEOPTS=AlpineLinuxBrowser
+
+# Set device manager to mdev
+DEVDOPTS=mdev
+
+# Contents of /etc/network/interfaces
+INTERFACESOPTS="auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+hostname AlpineLinuxBrowser
+"
+
+# Set timezone to UTC
+TIMEZONEOPTS="-z America/New_York"
+
+# set http/ftp proxy
+PROXYOPTS=none
+
+# Add first mirror (CDN)
+APKREPOSOPTS="-cf"
+
+# Create admin user
+USEROPTS=no
+
+# Install Openssh
+SSHDOPTS=openssh
+
+# Use openntpd
+NTPOPTS=none
+
+# Use /dev/vda as a sys disk
+export ERASE_DISKS=/dev/vda
+DISKOPTS="-m sys /dev/vda"
+
+# Setup storage with label APKOVL for config storage
+LBUOPTS=none
+APKCACHEOPTS=none

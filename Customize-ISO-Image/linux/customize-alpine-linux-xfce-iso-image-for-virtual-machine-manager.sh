@@ -30,18 +30,6 @@ then
 elif [ -z "$4" ]
 then
     echo "Login user password NOT specified!"
-elif [ -z "$5" ]
-then
-    echo "Share name NOT specified!"
-elif [ -z "$6" ]
-then
-    echo "Share user name NOT specified!"
-elif [ -z "$7" ]
-then
-    echo "Share user password NOT specified!"
-elif [ -z "$8" ]
-then
-    echo "Share user domain NOT specified!"
 else
     customizeIsoImageScriptStartTime=`date +%s`
 
@@ -65,7 +53,7 @@ else
             sudo cp -r -v -f "$scriptsDirectory/$customizationsDirectory" "$destinationIsoImageDirectory"
             cd "$destinationIsoImageDirectory/$customizationsDirectory"
             sudo cp -v -f "$destinationIsoImageDirectory/boot/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt.original"
-            zcat "$destinationIsoImageDirectory/boot/initramfs-virt" | cpio -idm
+            zcat "$destinationIsoImageDirectory/boot/initramfs-virt" | sudo cpio -idm
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-hyper-v-alpine-linux-xfce-installation.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-virtualbox-alpine-linux-xfce-installation.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/customize-virtual-machine-manager-alpine-linux-xfce-installation.sh"
@@ -73,22 +61,16 @@ else
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/power-manager.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/configure-firefox.sh"
             sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/install-pulseaudio.sh"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/setup-remote-desktop.sh"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/create-shared-directory.sh"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/create-remote-desktop-shortcut.sh"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<SHARE NAME>/$5/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<SHARE USER NAME>/$6/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<SHARE USER PASSWORD>/$7/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<SHARE USER DOMAIN>/$8/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled"
-            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop"
+            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtual-machine-manager/custom-alpinelinux-first-time.start.disabled"
+            sudo sed -i "s/<USER PASSWORD>/$4/g" "$destinationIsoImageDirectory/$customizationsDirectory/custom-scripts/virtual-machine-manager/custom-alpinelinux-first-time.start.disabled"
+            sudo sed -i "s/<USER NAME>/$3/g" "$destinationIsoImageDirectory/$customizationsDirectory/launch-customize-virtual-machine-manager-alpine-linux-xfce-installation-script.desktop"
             sudo cp -v -f "$destinationIsoImageDirectory/$customizationsDirectory/init" "$destinationIsoImageDirectory/$customizationsDirectory/init.original"
-            sudo sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/hyper-v/setup-alpine.answerfile $sysroot/etc/local.d\ncp -v -f ./custom-scripts/hyper-v/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-hyper-v-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/$customizationsDirectory/init"
+            sudo sed -z -i 's|exec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|cp -v -f ./startup-scripts/* $sysroot/etc/local.d\ncp -v -f ./custom-scripts/virtual-machine-manager/setup-alpine.answerfile $sysroot/etc/local.d\ncp -v -f ./custom-scripts/virtual-machine-manager/custom-alpinelinux-first-time.start.disabled $sysroot/etc/local.d\nchmod a+x $sysroot/etc/local.d/*.start*\nmkdir -p $sysroot/home/customizations\nmkdir -p $sysroot/home/customizations/custom-scripts\ncp -r -v -f ./custom-scripts/* $sysroot/home/customizations/custom-scripts\ncp -v -f ./*customize-*-installation.* $sysroot/home/customizations\ncp -v -f ./launch-customize-virtual-machine-manager-alpine-linux-xfce-installation-script.desktop $sysroot/home/customizations\nchmod a+x $sysroot/home/customizations/*\nln -s /etc/init.d/local $sysroot/etc/runlevels/default\nexec switch_root $switch_root_opts $sysroot $chart_init "$KOPT_init" $KOPT_init_args|2' "$destinationIsoImageDirectory/$customizationsDirectory/init"
             sudo rm -r -f "$destinationIsoImageDirectory/boot/initramfs-virt"
-            find . | cpio -o -H newc | gzip -1 > "$destinationIsoImageDirectory/boot/initramfs-virt"
+            find . | cpio -o -H newc | gzip -1 > "$destinationDirectory/initramfs-virt"
+            sudo mv -v "$destinationDirectory/initramfs-virt" "$destinationIsoImageDirectory/boot/initramfs-virt"
             cd "$scriptsDirectory/.."
-            source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "boot/syslinux" "$destinationIsoImageDirectory" "$destinationDirectory"
+            source "$isoUtilitiesDirectory/create-bootable-iso-image.sh" "boot/grub/efi.img" "$destinationIsoImageDirectory" "$destinationDirectory"
             if [ $exitCode == 0 ]
             then
                 echo ""
@@ -102,5 +84,3 @@ else
 fi
 
 echo ""
-
-exit $exitCode

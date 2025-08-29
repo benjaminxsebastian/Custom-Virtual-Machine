@@ -37,7 +37,7 @@ else
     isoBaseName=`(basename "$2" .iso)`
     destinationDirectory="$(readlink -f $3)"
 
-    source "$scriptsDirectory/customize-alpine-linux-xfce-iso-image-for-virtual-machine-manager.sh" "$2" "$destinationDirectory" "$4" "$5"
+    source "$scriptsDirectory/customize-alpine-linux-xfce-iso-image-for-virtual-machine-manager.sh" "$1" "$2" "$destinationDirectory" "$4" "$5"
 
     if [ $exitCode != 0 ]
     then

@@ -50,8 +50,12 @@ else
     if [[ "$1" == *"efi.img"* && "$2" == *"aarch64"* ]]; then
         sudo xorrisofs -output "$destinationCustomIsoImagePath" -efi-boot-part --efi-boot-image -e $1 -no-emul-boot -joliet -rational-rock -full-iso9660-filenames -follow-links "$2"
     else
-        sudo chmod +w "$2/$1/isolinux.bin"
-        sudo mkisofs -o "$destinationCustomIsoImagePath" -b  $1/isolinux.bin -c $1/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$2"
+        if [ -f "$2/$1/isolinux.bin" ]; then
+            sudo chmod +w "$2/$1/isolinux.bin"
+            sudo mkisofs -o "$destinationCustomIsoImagePath" -b  $1/isolinux.bin -c $1/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R -V "Custom Image" -eltorito-alt-boot -eltorito-boot boot/grub/efi.img -no-emul-boot "$2"
+        else
+            xorriso -as mkisofs -o "$destinationCustomIsoImagePath" --grub2-mbr --interval:local_fs:0s-15s:zero_mbrpt,zero_gpt:"$3/$isoBaseName.iso" --protective-msdos-label -partition_cyl_align off -partition_offset 16 --mbr-force-bootable -append_partition 2 28732ac11ff8d211ba4b00a0c93ec93b --interval:local_fs:12383488d-12393647d::"$3/$isoBaseName.iso" -appended_part_as_gpt -iso_mbr_part_type a2a0d0ebe5b9334487c068b6b72699c7 -b boot/grub/i386-pc/eltorito.img -c boot.catalog -no-emul-boot -boot-load-size 4 -boot-info-table -V "Custom Image" --grub2-boot-info -eltorito-alt-boot -e "--interval:appended_partition_2_start_3095872s_size_10160d:all::" -no-emul-boot -boot-load-size 10160 "$2"
+        fi
     fi
     exitCode=$?
     if [ $exitCode != 0 ]

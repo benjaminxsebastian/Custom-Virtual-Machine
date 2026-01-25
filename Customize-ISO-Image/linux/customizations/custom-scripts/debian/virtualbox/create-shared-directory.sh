@@ -20,7 +20,7 @@ then
 else
     exitCode=0
 
-    sharedDirectoryPath="$HOME/$1"
+    sharedDirectoryPath="/home/<USER NAME>/$1"
 
     mkdir -p "$sharedDirectoryPath"
     sudo umount -l "$sharedDirectoryPath"

@@ -14,8 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -n -t int -s 0
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t int -s 0
+if [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]]; then
+    xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 0
+    xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -n -t int -s 0
+    xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t int -s 0
 
-xset s off
+    xset s off
+elif [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
+    gsettings set org.gnome.desktop.screensaver lock-enabled false 
+    gsettings set org.gnome.desktop.session idle-delay 0
+fi

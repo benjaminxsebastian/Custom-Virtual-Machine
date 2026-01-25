@@ -14,13 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-sudo cp -v -f "/usr/share/applications/firefox.desktop" "$HOME/.config/autostart/firefox.desktop"
-firefox &
-sleep 5
-killall firefox-bin
-echo 'user_pref("browser.startup.homepage", "https://www.google.com");' > "$HOME/user.js"
-sudo mv -v -f "$HOME/user.js" $HOME/.mozilla/firefox/*.default-release
-firefox &
-sleep 5
-killall firefox-bin
+sudo rm -r -f "/home/<USER NAME>/.config/autostart/logout-console-session.desktop"
+sudo cp -v -f "/home/<USER NAME>/custom-scripts/hyper-v/logout-console-session.desktop" "/home/<USER NAME>/.config/autostart/logout-console-session.desktop"

@@ -1,0 +1,69 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  network:
+    version: 2
+    ethernets:
+      eth0:
+        dhcp4: true
+  apt:
+    preserve_sources_list: false
+    mirror-selection:
+      primary:
+        - country-mirror
+        - uri: 'http://archive.ubuntu.com/ubuntu'
+          arches: [i386, amd64]
+        - uri: 'http://ports.ubuntu.com/ubuntu-ports'
+          arches: [s390x, arm64, armhf, powerpc, ppc64el, riscv64]
+    fallback: offline-install
+    geoip: true
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+  identity:
+    hostname: <VIRTUAL MACHINE NAME>
+    realname: 'Benjamin Sebastian'
+    username: <USER NAME>
+    password: '<ENCRYPTED USER PASSWORD>'
+  codecs:
+    install: true
+  timezone: America/Indiana/Indianapolis
+  updates: all
+  late-commands:
+    - cp -r -v -f /cdrom/customizations/<USER NAME> /target/home
+    - cp -v -f /cdrom/customizations/*customize-*-installation.* /target/home/<USER NAME>
+    - cp -v -f /cdrom/customizations/launch-customize-<VIRTUALIZATION PLATFORM>-ubuntu-desktop-installation-script.desktop /target/home/<USER NAME>
+  shutdown: reboot
+  user-data:
+    runcmd:
+      - chmod +x /home/<USER NAME>/custom-scripts/*.sh
+      - chmod +x /home/<USER NAME>/custom-scripts/hyper-v/*.sh
+      - chmod +x /home/<USER NAME>/custom-scripts/virtualbox/*.sh
+      - chmod +x /home/<USER NAME>/*customize-*-installation.*
+      - sudo touch "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo chmod +w "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo echo 'polkit.addRule(function(action, subject) {' >> "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo echo '    if ((action.id == "org.gnome.controlcenter.user-accounts.administration") && subject.isInGroup("sudo")) {' >> "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo echo '         return polkit.Result.YES;' >> "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo echo '    }' >> "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo echo '});' >> "/etc/polkit-1/rules.d/00-allow-useradmin.rules"
+      - sudo usermod -U <USER NAME>
+      - sudo cp -v -f "/etc/gdm3/custom.conf" "/etc/gdm3/custom.conf.original"
+      - sudo sed -i '0,/\[daemon\]/s/\[daemon\]/\[daemon\]\nAutomaticLoginEnable=True\nAutomaticLogin=<USER NAME>\n/' "/etc/gdm3/custom.conf"
+      - sudo sed -i 's/#  AutomaticLoginEnable = true/#  AutomaticLoginEnable=True/' "/etc/gdm3/custom.conf"
+      - sudo sed -i 's/#  AutomaticLogin = user1/#  AutomaticLogin=<USER NAME>/' "/etc/gdm3/custom.conf"
+      - sudo cp -v -f "/etc/sudoers" "/etc/sudoers.original"
+      - sudo sed -i 's,%sudo\tALL=(ALL:ALL) ALL,%sudo\tALL=(ALL:ALL) NOPASSWD:xxxALL,' "/etc/sudoers"
+      - sudo sed -i 's/xxxALL/ ALL/' "/etc/sudoers"
+      - sudo apt remove gnome-initial-setup -y
+      - mkdir -p /home/<USER NAME>/.config/autostart
+      - sudo mv -v -f /home/<USER NAME>/launch-customize-<VIRTUALIZATION PLATFORM>-ubuntu-desktop-installation-script.desktop /home/<USER NAME>/.config/autostart
+      - sudo chmod +x /home/<USER NAME>/.config/autostart/launch-customize-<VIRTUALIZATION PLATFORM>-ubuntu-desktop-installation-script.desktop
+      - sudo chown -R <USER NAME>:<USER NAME> /home/<USER NAME>
+      - sudo reboot now

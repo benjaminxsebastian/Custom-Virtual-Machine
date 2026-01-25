@@ -57,11 +57,6 @@ mkdir -p /home/<USER NAME>
 
 abuild-keygen -a -n
 
-#cd /home/<USER NAME>
-#git clone git://git.alpinelinux.org/aports
-#cd /home/<USER NAME>/aports
-#git pull
-
 mkdir -p /home/<USER NAME>/.config/autostart
 cp -v -f /usr/share/applications/firefox.desktop /home/<USER NAME>/.config/autostart
 

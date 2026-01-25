@@ -21,7 +21,7 @@ else
     grepStatus=-1
     sourcesList="official-source-repositories.list"
     sourcesListPath="/etc/apt/sources.list.d/$sourcesList"
-    sourcesListTempPath="$HOME/$sourcesList"
+    sourcesListTempPath="/home/<USER NAME>/$sourcesList"
 
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     if [ -f  "$sourcesListPath" ]
@@ -38,29 +38,29 @@ else
     sudo apt-get update
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo apt build-dep pulseaudio -y
-    cd "$HOME"
+    cd "/home/<USER NAME>"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo git clone https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git
-    cd "$HOME/pulseaudio"
+    cd "/home/<USER NAME>/pulseaudio"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo meson build
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo ninja -C build
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo meson --prefix="$HOME/pulseaudio" build
+    sudo meson --prefix="/home/<USER NAME>/pulseaudio" build
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo ninja -C build install
-    cd "$HOME"
+    cd "/home/<USER NAME>"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
-    cd "$HOME/pulseaudio-module-xrdp"
+    cd "/home/<USER NAME>/pulseaudio-module-xrdp"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo ./bootstrap
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo ./configure PULSE_DIR="$HOME/pulseaudio"
+    sudo ./configure PULSE_DIR="/home/<USER NAME>/pulseaudio"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo make
-    cd "$HOME/pulseaudio-module-xrdp/src/.libs"
+    cd "/home/<USER NAME>/pulseaudio-module-xrdp/src/.libs"
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     sudo install -t "/var/lib/xrdp-pulseaudio-installer" -D -m 644 *.so
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
@@ -68,5 +68,5 @@ else
     then
         sudo rm -r -f "$sourcesListPath"
     fi
-    cd "$HOME"
+    cd "/home/<USER NAME>"
 fi

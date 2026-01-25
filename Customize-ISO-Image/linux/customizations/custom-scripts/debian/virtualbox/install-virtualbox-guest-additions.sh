@@ -19,9 +19,16 @@ then
     echo "Login user password NOT specified!"
 else
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo apt install git -y
-    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo apt install openoffice.org-hyphenation -y
-    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo apt install mint-meta-codecs -y
+    sudo mkdir /mnt/cdrom
+    sudo mount /dev/sr0 /mnt/cdrom
+    sudo /mnt/cdrom/VBoxLinuxAdditions.run
+    sudo umount /mnt/cdrom
+
+    launchInstallGuestAdditionsScriptPath="/home/<USER NAME>/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
+    if [ -f  "$launchInstallGuestAdditionsScriptPath" ]
+    then
+        sudo rm -rf "$launchInstallGuestAdditionsScriptPath"
+    fi
+
+    sudo shutdown now
 fi

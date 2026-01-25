@@ -34,7 +34,7 @@ else
     createSharedDirectoryScriptPath="$hyperVCustomScriptsDirectory/create-shared-directory.sh"
     createRemoteDesktopShortcutScript="create-remote-desktop-shortcut.sh"
     createRemoteDesktopShortcutScriptPath="$hyperVCustomScriptsDirectory/$createRemoteDesktopShortcutScript"
-    cronJobsListing="$HOME/cronJobsListing"
+    cronJobsListing="/home/<USER NAME>/cronJobsListing"
 
     source "$createSharedDirectoryScriptPath" "$2" "$3" "$4" "$5"
 

@@ -5,7 +5,7 @@
 KEYMAPOPTS="us us"
 
 # Set hostname
-HOSTNAMEOPTS=AlpineLinuxBrowser
+HOSTNAMEOPTS=<VIRTUAL MACHINE NAME>
 
 # Set device manager to mdev
 DEVDOPTS=mdev
@@ -16,7 +16,7 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-hostname AlpineLinuxBrowser
+hostname <VIRTUAL MACHINE NAME>
 "
 
 # Set timezone to UTC

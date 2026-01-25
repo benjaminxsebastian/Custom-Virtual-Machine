@@ -14,5 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo rm -r -f "$HOME/.config/autostart/logout-console-session.desktop"
-sudo cp -v -f "$HOME/custom-scripts/hyper-v/logout-console-session.desktop" "$HOME/.config/autostart/logout-console-session.desktop"
+if [ -z "$1" ]
+then
+    echo "Login user password NOT specified!"
+else
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install whois -y
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install git -y
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install xorriso -y
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo apt install openvpn -y
+fi

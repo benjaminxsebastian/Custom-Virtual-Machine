@@ -34,7 +34,13 @@ else
     ipAddress=$(ifconfig | grep -i "172")
     read -a ipAddressArray <<< $ipAddress
     ip=${ipAddressArray[1]#addr:}
-    rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Browser ($ip).rdp"
+    if echo "$HOSTNAME" | grep -iq "Browser"; then
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Browser ($ip).rdp"
+    elif echo "$HOSTNAME" | grep -iq "Developer"; then
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Developer ($ip).rdp"
+    else
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Other ($ip).rdp"
+    fi
     rdpFilePath="/home/<USER NAME>/$rdpFileName"
 
     rm -r -f "$rdpFilePath"

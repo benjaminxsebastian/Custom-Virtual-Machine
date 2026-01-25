@@ -33,43 +33,44 @@ else
     if [ -z "$1" ]
     then
         echo "Login user password NOT specified!"
+    elif [ -z "$2" ]
+    then
+        echo "Share name NOT specified!"
+    elif [ -z "$3" ]
+    then
+        echo "Share user name NOT specified!"
+    elif [ -z "$4" ]
+    then
+        echo "Share user password NOT specified!"
+    elif [ -z "$5" ]
+    then
+        echo "Share user domain NOT specified!"
     else
         source "/home/<USER NAME>/custom-scripts/power-manager.sh"
         source "/home/<USER NAME>/custom-scripts/update.sh" $1
         source "/home/<USER NAME>/custom-scripts/install-common-packages.sh" $1
-        source "/home/<USER NAME>/custom-scripts/update.sh" $1
         source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
+        source "/home/<USER NAME>/custom-scripts/install-additional-packages.sh" $1
+        source "/home/<USER NAME>/custom-scripts/install-pipewire.sh" $1
+        source "/home/<USER NAME>/custom-scripts/hyper-v/setup-remote-desktop.sh" "$1" "$2" "$3" "$4" "$5"
+        source "/home/<USER NAME>/custom-scripts/update.sh" $1
 
         echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-        sudo apt install openoffice.org-hyphenation -y
-        echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-        sudo apt install mint-meta-codecs -y
+        sudo apt install gnome-shell-extension-manager -y
+        gnome-extensions enable ubuntu-dock@ubuntu.com
+        gsettings set org.gnome.mutter dynamic-workspaces false
+        gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
 
-        killall mintUpdate
-        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.updates").set_boolean("show-welcome-page", False)'
-        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.updates").set_boolean("default-repo-is-ok", True)'
-        sudo mintupdate-cli upgrade -y
-
-        for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
-        do
-            pactl -- set-sink-volume $SINK 100%
-        done
-
-        mkdir -p "/home/<USER NAME>/.linuxmint/mintwelcome"
-        touch "/home/<USER NAME>/.linuxmint/mintwelcome/norun.flag"
-
-        python3 -c 'import gi; from gi.repository import Gio; Gio.Settings(schema_id="com.linuxmint.report").set_strv("ignored-reports", ["timeshift-no-setup"])'
-        killall xfce4-panel
-
-        launchCustomizationScriptPath="/home/<USER NAME>/.config/autostart/launch-customize-virtualbox-linux-mint-xfce-installation-script.desktop"
+        launchCustomizationScriptPath="/home/<USER NAME>/.config/autostart/launch-customize-hyper-v-ubuntu-desktop-installation-script.desktop"
         if [ -f  "$launchCustomizationScriptPath" ]
         then
             sudo rm -rf "$launchCustomizationScriptPath"
         fi
 
-        launchInstallGuestAdditionsScriptPath="/home/<USER NAME>/custom-scripts/virtualbox/launch-install-virtualbox-guest-additions-script.desktop"
-        sudo mv -v -f "$launchInstallGuestAdditionsScriptPath" "/home/<USER NAME>/.config/autostart"
+        sudo sed -i 's/AutomaticLoginEnable=True/# AutomaticLoginEnable=True/' "/etc/gdm3/custom.conf"
+        sudo sed -i 's/AutomaticLogin=<USER NAME>/# AutomaticLogin=<USER NAME>/' "/etc/gdm3/custom.conf"
+        sudo sed -i 's/NOPASSWD: //g' "/etc/sudoers"
 
-        sudo shutdown now
+        shutdown now
     fi
 fi

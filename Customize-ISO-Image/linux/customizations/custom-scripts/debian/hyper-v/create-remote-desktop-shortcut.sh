@@ -31,7 +31,17 @@ else
 
     releaseInformation=$(cat /etc/issue)
     read -a releaseInformationArray <<< $releaseInformation
-    rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-${releaseInformationArray[3]}-Browser ($(hostname -I)).rdp"
+    virtualMachineType="Other"
+    if echo "$HOSTNAME" | grep -iq "Browser"; then
+        virtualMachineType="Browser"
+    elif echo "$HOSTNAME" | grep -iq "Developer"; then
+        virtualMachineType="Developer"
+    fi
+    if echo "$HOSTNAME" | grep -iq "LinuxMint"; then
+        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-${releaseInformationArray[3]}-$virtualMachineType ($(hostname -I)).rdp"
+    else
+        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-$virtualMachineType ($(hostname -I)).rdp"
+    fi
     rdpFilePath="/home/<USER NAME>/$rdpFileName"
 
     rm -r -f "$rdpFilePath"

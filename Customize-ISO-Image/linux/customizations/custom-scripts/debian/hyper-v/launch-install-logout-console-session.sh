@@ -34,7 +34,5 @@ else
 
     source "$createSharedDirectoryScriptPath" "$1" "$2" "$3" "$4"
 
-    #sudo rm -r -f "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
-    #sudo cp -v -f "$installLogoutConsoleSessionScriptPath" "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
     "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
 fi

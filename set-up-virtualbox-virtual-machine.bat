@@ -25,26 +25,26 @@ IF [%~7] EQU [] SET "invalidArgument=true"
 IF [%~8] EQU [] SET "invalidArgument=true"
 IF [%invalidArgument%] NEQ [] (
     ECHO:
-    ECHO Usage: set-up-virtualbox-virtual-machine [Path to ISO Image] [VM Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share Path] [Virtual Machine Name] [Host Temporary Directory]
+    ECHO Usage: set-up-virtualbox-virtual-machine [Virtual Machine Name] [Path to ISO Image] [VM Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share Path] [Host Temporary Directory]
     SET invalidArgument=
     EXIT /B 10001
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
     SET "username=root"
-    SET "isoBaseName=%~1"
-    FOR %%P IN ("%~1") DO (
+    SET "isoBaseName=%~2"
+    FOR %%P IN ("%~2") DO (
         SET "isoBaseName=%%~NXP"
     )
-    SET "destinationCustomIsoImagePath=%~6\custom-!isoBaseName!"
+    SET "destinationCustomIsoImagePath=%~7\custom-!isoBaseName!"
     IF NOT EXIST "!destinationCustomIsoImagePath!" (
-        VBoxManage sharedfolder remove "%~7" -name "%~5" --transient
-        VBoxManage sharedfolder add "%~7" -name "%~5" -hostpath "%~6" --transient
+        VBoxManage sharedfolder remove "%~1" -name "%~6" --transient
+        VBoxManage sharedfolder add "%~1" -name "%~6" -hostpath "%~7" --transient
         IF !ERRORLEVEL! NEQ 0 EXIT /B
         SET scriptName=
         ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
         IF !ERRORLEVEL! EQU 0 (
-            SET "username=%~3"
+            SET "username=%~4"
             SET "scriptName=customize-linux-mint-xfce-iso-image-for-virtualbox.sh"
         ) ELSE (
             ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
@@ -57,20 +57,22 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             ECHO Unsupported Linux type!
             EXIT /B 1
         )
-        VBoxManage guestcontrol "%~7" run --exe "/home/%~3/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~4" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5"
+        VBoxManage guestcontrol "%~1" run --exe "/home/%~4/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~5" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5" "%~6"
     )
     IF !ERRORLEVEL! NEQ 0 EXIT /B
-    ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
+    SET memorySizeInGb=4
+    SET hardDriveSizeInGb=25
+    SET "audioDriver=default"
+    SET "audioController=ac97"
+    ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
     IF !ERRORLEVEL! EQU 0 (
-        SET memorySizeInGb=4
-        SET hardDriveSizeInGb=25
-        SET "audioDriver=default"
-        SET "audioController=ac97"
-    ) ELSE (
-        SET memorySizeInGb=2
-        SET hardDriveSizeInGb=10
         SET "audioDriver=dsound"
         SET "audioController=hda"
+        ECHO "%~1" | FINDSTR /I "browser" > NUL
+        IF !ERRORLEVEL! EQU 0 (
+            SET memorySizeInGb=2
+            SET hardDriveSizeInGb=10
+        )
     )
-    CALL %~dp0Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~7" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!audioDriver!" "!audioController!" "!destinationCustomIsoImagePath!"
+    CALL %~dp0Configure-Virtual-Machine\virtualbox\create-virtualbox-virtual-machine.bat "%~1" "%~8" !memorySizeInGb! !hardDriveSizeInGb! "!audioDriver!" "!audioController!" "!destinationCustomIsoImagePath!"
 ENDLOCAL

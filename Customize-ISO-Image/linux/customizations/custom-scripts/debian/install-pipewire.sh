@@ -19,16 +19,15 @@ then
     echo "Login user password NOT specified!"
 else
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
-    sudo mkdir /mnt/cdrom
-    sudo mount /dev/sr0 /mnt/cdrom
-    sudo /mnt/cdrom/VBoxLinuxAdditions.run
-    sudo umount /mnt/cdrom
-
-    launchInstallGuestAdditionsScriptPath="$HOME/.config/autostart/launch-install-virtualbox-guest-additions-script.desktop"
-    if [ -f  "$launchInstallGuestAdditionsScriptPath" ]
-    then
-        sudo rm -rf "$launchInstallGuestAdditionsScriptPath"
-    fi
-
-    sudo shutdown now
+    sudo git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git
+    cd "/home/<USER NAME>/pipewire-module-xrdp"
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo ./bootstrap
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo ./configure
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo make
+    echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
+    sudo make install
+    cd "/home/<USER NAME>"
 fi

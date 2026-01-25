@@ -17,7 +17,7 @@
 source "/home/<USER NAME>/custom-scripts/power-manager.sh"
 source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
 
-launchCustomizationScriptPath="$HOME/.config/autostart/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
+launchCustomizationScriptPath="/home/<USER NAME>/.config/autostart/launch-customize-virtualbox-alpine-linux-xfce-installation-script.desktop"
 if [ -f  "$launchCustomizationScriptPath" ]
 then
     rm -rf "$launchCustomizationScriptPath"

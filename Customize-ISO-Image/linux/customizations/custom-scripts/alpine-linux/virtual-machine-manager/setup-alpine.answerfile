@@ -5,7 +5,7 @@
 KEYMAPOPTS="us us"
 
 # Set hostname
-HOSTNAMEOPTS=AlpineLinuxBrowser
+HOSTNAMEOPTS=<VIRTUAL MACHINE NAME>
 
 # Set device manager to mdev
 DEVDOPTS=mdev

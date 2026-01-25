@@ -38,7 +38,7 @@ else
     launchInstallLogoutConsoleSessionScriptPath="$hyperVCustomScriptsDirectory/$launchInstallLogoutConsoleSessionScript"
     createRemoteDesktopShortcutScript="create-remote-desktop-shortcut.sh"
     createRemoteDesktopShortcutScriptPath="$hyperVCustomScriptsDirectory/$createRemoteDesktopShortcutScript"
-    cronJobsListing="$HOME/cronJobsListing"
+    cronJobsListing="/home/<USER NAME>/cronJobsListing"
 
     echo "$1" | sudo -S echo "Refreshing administrator credentials ..." 2>/dev/null
     source "$createSharedDirectoryScriptPath" "$2" "$3" "$4" "$5"
@@ -49,14 +49,18 @@ else
     grepStatus=$?
     if [ $grepStatus != 0 ]
     then
-        echo "* * * * * \"$launchInstallLogoutConsoleSessionScriptPath\" \"$2\" \"$3\" \"$4\" \"$5\"" >> $cronJobsListing
+        if echo "$HOSTNAME" | grep -iq "LinuxMint"; then
+            echo "* * * * * \"$launchInstallLogoutConsoleSessionScriptPath\" \"$2\" \"$3\" \"$4\" \"$5\"" >> $cronJobsListing
+        fi
         echo "* * * * * \"$createRemoteDesktopShortcutScriptPath\" \"$2\" \"$3\" \"$4\" \"$5\"" >> $cronJobsListing
         sudo crontab $cronJobsListing
         rm -r -f $cronJobsListing
     fi
     "$createRemoteDesktopShortcutScriptPath" "$2" "$3" "$4" "$5"
 
-    sudo rm -r -f "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
-    sudo cp -v -f "$installLogoutConsoleSessionScriptPath" "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
-    "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
+    if echo "$HOSTNAME" | grep -iq "LinuxMint"; then
+        sudo rm -r -f "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
+        sudo cp -v -f "$installLogoutConsoleSessionScriptPath" "$sharedDirectoryPath/$installLogoutConsoleSessionScript"
+        "$sharedDirectoryPath/$installLogoutConsoleSessionScript"    
+    fi
 fi

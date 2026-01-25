@@ -38,7 +38,7 @@ ubiquity	ubiquity/use_nonfree boolean true
 
 # Who Are You Dialog
 d-i	passwd/user-fullname	string	Benjamin Sebastian
-d-i	netcfg/get_hostname	string	LinuxMintBrowser
+d-i	netcfg/get_hostname	string	<VIRTUAL MACHINE NAME>
 d-i	passwd/username	string	<USER NAME>
 d-i	passwd/user-password	password	<USER PASSWORD>
 d-i	passwd/user-password-again	password	<USER PASSWORD>

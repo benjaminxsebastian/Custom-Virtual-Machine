@@ -26,34 +26,39 @@ IF [%~8] EQU [] SET "invalidArgument=true"
 IF [%~9] EQU [] SET "invalidArgument=true"
 IF [%invalidArgument%] NEQ [] (
     ECHO:
-    ECHO Usage: set-up-hyper-v-virtual-machine [Path to ISO Image] [Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share User Name] [Share User Password] [Share User Domain] [Virtual Machine Name]
+    ECHO Usage: set-up-hyper-v-virtual-machine [Virtual Machine Name] [Path to ISO Image] [Temporary Directory] [Login User Name] [Login User Password] [Share Name] [Share User Name] [Share User Password] [Share User Domain]
     SET invalidArgument=
     EXIT /B 10001
 )
 
 SETLOCAL ENABLEDELAYEDEXPANSION
     SET isoBaseName=
-    FOR /F "usebackq delims==" %%P IN (`WSL eval "basename !%~1! .iso"`) DO (
+    FOR /F "usebackq delims==" %%P IN (`WSL eval "basename !%~2! .iso"`) DO (
         SET "isoBaseName=%%P"
     )
-    SET "destinationCustomIsoImagePath=%~2\custom-!isoBaseName!.iso"
+    SET "destinationCustomIsoImagePath=%~3\custom-!isoBaseName!.iso"
     IF NOT EXIST "!destinationCustomIsoImagePath!" (
         SET "currentDirectoryPath=%~dp0."
         FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!currentDirectoryPath!"`) DO (
             SET "currentDirectoryPath=%%P"
         )
-        SET "temporaryDirectoryPath=%~2"
+        SET "temporaryDirectoryPath=%~3"
         FOR /F "usebackq delims==" %%P IN (`WSL wslpath "!temporaryDirectoryPath!"`) DO (
             SET "temporaryDirectoryPath=%%P"
         )
         SET scriptName=
-        ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
+        ECHO "!isoBaseName!" | FINDSTR /I "ubuntu" > NUL
         IF !ERRORLEVEL! EQU 0 (
-            SET "scriptName=customize-linux-mint-xfce-iso-image-for-hyper-v.sh"
+            SET "scriptName=customize-ubuntu-desktop-iso-image-for-hyper-v.sh"
         ) ELSE (
-            ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
+            ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
             IF !ERRORLEVEL! EQU 0 (
-                SET "scriptName=customize-alpine-linux-xfce-iso-image-for-hyper-v.sh"
+                SET "scriptName=customize-linux-mint-xfce-iso-image-for-hyper-v.sh"
+            ) ELSE (
+                ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
+                IF !ERRORLEVEL! EQU 0 (
+                    SET "scriptName=customize-alpine-linux-xfce-iso-image-for-hyper-v.sh"
+                )
             )
         )
         IF [!scriptName!] EQU [] (
@@ -61,16 +66,18 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             ECHO Unsupported Linux type!
             EXIT /B 1
         )
-        CALL WSL bash -c "sudo apt install -y dos2unix; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/alpine-linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/debian/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/linux-mint/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/linux-mint/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/linux-mint/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/preseed/*; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/startup-scripts/*; !currentDirectoryPath!Customize-ISO-Image/linux/!scriptName! \"%~1\" \"!temporaryDirectoryPath!\" \"%~3\" \"%~4\" \"%~5\" \"%~6\" \"%~7\" \"%~8\""
+        CALL WSL bash -c "sudo apt install -y dos2unix; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/alpine-linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/iso-utilities/debian/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/alpine-linux/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/debian/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/debian/hyper-v/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/custom-scripts/debian/virtualbox/*.sh; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/preseed/*; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/nocloud/*; dos2unix !currentDirectoryPath!Customize-ISO-Image/linux/customizations/startup-scripts/*; !currentDirectoryPath!Customize-ISO-Image/linux/!scriptName! \"%~1\" \"%~2\" \"!temporaryDirectoryPath!\" \"%~4\" \"%~5\" \"%~6\" \"%~7\" \"%~8\" \"%~9\""
     )
     IF !ERRORLEVEL! NEQ 0 EXIT /B
-    ECHO "!isoBaseName!" | FINDSTR /I "mint" > NUL
+    SET memorySizeInGb=4
+    SET hardDriveSizeInGb=25
+    ECHO "!isoBaseName!" | FINDSTR /I "alpine" > NUL
     IF !ERRORLEVEL! EQU 0 (
-        SET memorySizeInGb=4
-        SET hardDriveSizeInGb=25
-    ) ELSE (
-        SET memorySizeInGb=2
-        SET hardDriveSizeInGb=10
+        ECHO "%~1" | FINDSTR /I "browser" > NUL
+        IF !ERRORLEVEL! EQU 0 (
+            SET memorySizeInGb=2
+            SET hardDriveSizeInGb=10
+        )
     )
-    CALL %~dp0\Configure-Virtual-Machine\hyper-v\create-hyper-v-virtual-machine.bat "%~9" "%~2" !memorySizeInGb! !hardDriveSizeInGb! "!destinationCustomIsoImagePath!"
+    CALL %~dp0\Configure-Virtual-Machine\hyper-v\create-hyper-v-virtual-machine.bat "%~1" "%~3" !memorySizeInGb! !hardDriveSizeInGb! "!destinationCustomIsoImagePath!"
 ENDLOCAL

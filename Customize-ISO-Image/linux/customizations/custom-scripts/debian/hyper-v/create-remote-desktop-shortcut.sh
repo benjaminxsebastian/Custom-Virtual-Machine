@@ -38,9 +38,9 @@ else
         virtualMachineType="Developer"
     fi
     if echo "$HOSTNAME" | grep -iq "LinuxMint"; then
-        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-${releaseInformationArray[3]}-$virtualMachineType ($(hostname -I)).rdp"
+        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-${releaseInformationArray[3]}-$virtualMachineType ($(hostname -I | awk '{print $1}')).rdp"
     else
-        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-$virtualMachineType ($(hostname -I)).rdp"
+        rdpFileName="${releaseInformationArray[0]}-${releaseInformationArray[1]}-${releaseInformationArray[2]}-$virtualMachineType ($(hostname -I | awk '{print $1}')).rdp"
     fi
     rdpFilePath="/home/<USER NAME>/$rdpFileName"
 

@@ -31,9 +31,8 @@ else
 
     releaseInformation=$(cat /etc/issue)
     read -a releaseInformationArray <<< $releaseInformation
-    ipAddress=$(ifconfig | grep -i "172")
-    read -a ipAddressArray <<< $ipAddress
-    ip=${ipAddressArray[1]#addr:}
+    defaultInterface=$(ip route | awk '/default/ {print $5}')
+    ip=$(ip -4 addr show $defaultInterface | grep "inet" | awk '/inet/ {print $2}' | cut -d'/' -f1)
     if echo "$HOSTNAME" | grep -iq "Browser"; then
         rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Browser ($ip).rdp"
     elif echo "$HOSTNAME" | grep -iq "Developer"; then

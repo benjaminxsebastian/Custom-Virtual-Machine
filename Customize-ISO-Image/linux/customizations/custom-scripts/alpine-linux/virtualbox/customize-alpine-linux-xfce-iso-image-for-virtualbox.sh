@@ -54,11 +54,11 @@ else
         customizationsDirectory="customizations"
         destinationDirectory="$(readlink -f $3)"
 
-        echo "Customizing ISO image from: $1 into directory: $destinationDirectory"
+        echo "Customizing ISO image from: $2 into directory: $destinationDirectory"
         echo ""
 
         mkdir -p "$destinationDirectory"
-        source "$isoUtilitiesDirectory/fetch-iso-image.sh" "$1" "$destinationDirectory"
+        source "$isoUtilitiesDirectory/fetch-iso-image.sh" "$2" "$destinationDirectory"
         if [ $exitCode == 0 ]
         then
             source "$isoUtilitiesDirectory/extract-iso-image.sh" "$destinationIsoImagePath" "$destinationDirectory"
@@ -89,7 +89,7 @@ else
                 then
                     cp -r -v -f "$destinationCustomIsoImagePath" "$sharedDirectoryPath"
                     echo ""
-                    echo "Customized ISO image: $destinationCustomIsoImagePath from: $1"
+                    echo "Customized ISO image: $destinationCustomIsoImagePath from: $2"
                 fi
             fi
         fi

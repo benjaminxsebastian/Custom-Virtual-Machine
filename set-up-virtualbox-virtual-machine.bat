@@ -57,7 +57,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
             ECHO Unsupported Linux type!
             EXIT /B 1
         )
-        VBoxManage guestcontrol "%~1" run --exe "/home/%~4/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~5" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5" "%~6"
+        VBoxManage guestcontrol "%~1" run --exe "/home/%~4/custom-scripts/virtualbox/!scriptName!" --username="!username!" --password="%~5" --wait-stdout --wait-stderr -- "%~1" "%~2" "%~3" "%~4" "%~5" "%~6" -
     )
     IF !ERRORLEVEL! NEQ 0 EXIT /B
     SET memorySizeInGb=4

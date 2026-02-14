@@ -31,6 +31,7 @@ setup-ntp none
 # Setup desktop
 setup-desktop xfce
 sed -i 's/#autologin-user=/autologin-user=<USER NAME>/g' "/etc/lightdm/lightdm.conf"
+sed -i 's/#user-session=default/user-session=xfce/g' "/etc/lightdm/lightdm.conf"
 
 mv -v -f "/etc/local.d/update.start.disabled" "/etc/local.d/update.start"
 mv -v -f "/etc/local.d/custom-alpinelinux-first-time.start" "/etc/local.d/custom-alpinelinux-first-time.start.disabled"

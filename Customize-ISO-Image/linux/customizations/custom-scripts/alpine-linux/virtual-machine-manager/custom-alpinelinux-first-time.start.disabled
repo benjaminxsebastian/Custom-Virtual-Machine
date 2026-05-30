@@ -89,6 +89,8 @@ EOF
 
 source "/home/<USER NAME>/custom-scripts/install-pulseaudio.sh" "$pulseaudioSourceDirectoryPath"
 
+source "/home/<USER NAME>/custom-scripts/install-tailscale.sh"
+
 echo 'permit nopass <USER NAME> as root' >> "/etc/doas.d/doas.conf"
 
 apk update

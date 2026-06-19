@@ -43,7 +43,7 @@ else
     then
         echo "Error customizing ISO image: $2. exitCode: $exitCode"
     else
-        source "$rootDirectory/Configure-Virtual-Machine/virtual-machine-manager/create-virtual-machine-manager-virtual-machine.bat" "$1" "$destinationCustomIsoImagePath"
+        source "$rootDirectory/Configure-Virtual-Machine/virtual-machine-manager/create-virtual-machine-manager-virtual-machine.sh" "$1" "$destinationCustomIsoImagePath"
     fi
 fi
 

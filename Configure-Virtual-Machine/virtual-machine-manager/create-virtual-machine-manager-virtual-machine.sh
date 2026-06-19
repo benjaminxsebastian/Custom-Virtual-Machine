@@ -25,6 +25,9 @@ then
 else
     virtualMachineName="$1"
     lastCharacter="${virtualMachineName: -1}"
+    if ! [[ "$lastCharacter" =~ ^[0-9]$ ]]; then
+        lastCharacter="0"
+    fi
     isoImagePath="$2"
     memorySizeInGb=2
     hardDriveSizeInGb=10

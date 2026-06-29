@@ -32,13 +32,13 @@ else
     releaseInformation=$(cat /etc/issue)
     read -a releaseInformationArray <<< $releaseInformation
     defaultInterface=$(ip route | awk '/default/ {print $5}')
-    ip=$(ip -4 addr show $defaultInterface | grep "inet" | awk '/inet/ {print $2}' | cut -d'/' -f1)
+    ipAddress=$(ip -4 addr show $defaultInterface | grep "inet" | awk '/inet/ {print $2}' | cut -d'/' -f1)
     if echo "$HOSTNAME" | grep -iq "Browser"; then
-        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Browser ($ip).rdp"
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Browser ($ipAddress).rdp"
     elif echo "$HOSTNAME" | grep -iq "Developer"; then
-        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Developer ($ip).rdp"
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Developer ($ipAddress).rdp"
     else
-        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Other ($ip).rdp"
+        rdpFileName="${releaseInformationArray[2]}-${releaseInformationArray[3]}-${releaseInformationArray[4]}-Other ($ipAddress).rdp"
     fi
     rdpFilePath="/home/<USER NAME>/$rdpFileName"
 
@@ -67,7 +67,7 @@ else
     echo "disable themes:i:0" >> "$rdpFilePath"
     echo "disable cursor setting:i:0" >> "$rdpFilePath"
     echo "bitmapcachepersistenable:i:1" >> "$rdpFilePath"
-    echo "full address:s:$ip" >> "$rdpFilePath"
+    echo "full address:s:$ipAddress" >> "$rdpFilePath"
     echo "audiomode:i:0" >> "$rdpFilePath"
     echo "redirectprinters:i:1" >> "$rdpFilePath"
     echo "redirectlocation:i:0" >> "$rdpFilePath"

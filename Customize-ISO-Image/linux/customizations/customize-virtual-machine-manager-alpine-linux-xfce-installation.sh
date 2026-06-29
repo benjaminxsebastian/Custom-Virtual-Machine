@@ -17,10 +17,25 @@
 source "/home/<USER NAME>/custom-scripts/power-manager.sh"
 source "/home/<USER NAME>/custom-scripts/configure-firefox.sh"
 
-for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
-do
-    pactl -- set-sink-volume $SINK 100%
-done
+if command -v pacmd &> /dev/null; then
+    for SINK in $(pacmd list-sinks | grep 'index:' | cut -b12-)
+    do
+        pactl -- set-sink-volume $SINK 100%
+    done
+fi
+
+triggerReimageScript="trigger-reimage.sh"
+triggerReimageScriptSourcePath="/home/<USER NAME>/custom-scripts/virtual-machine-manager/"$triggerReimageScript""
+triggerReimageScriptDestinationPath="/home/<USER NAME>/"$triggerReimageScript""
+cp "$triggerReimageScriptSourcePath" "$triggerReimageScriptDestinationPath"
+chmod +x "$triggerReimageScriptDestinationPath"
+
+triggerReimageScriptLauncher="trigger-reimage.desktop" 
+triggerReimageScriptLauncherSourcePath="/home/<USER NAME>/custom-scripts/virtual-machine-manager/"$triggerReimageScriptLauncher""
+triggerReimageScriptLauncherDestinationPath="/home/<USER NAME>/Desktop/"$triggerReimageScriptLauncher""
+cp "$triggerReimageScriptLauncherSourcePath" "$triggerReimageScriptLauncherDestinationPath"
+chmod +x "$triggerReimageScriptLauncherDestinationPath"
+gio set -t string "$triggerReimageScriptLauncherDestinationPath" metadata::xfce-exe-checksum "$(sha256sum /home/<USER NAME>/Desktop/trigger-reimage.desktop | awk '{print $1}')"
 
 launchCustomizationScriptPath="/home/<USER NAME>/.config/autostart/launch-customize-virtual-machine-manager-alpine-linux-xfce-installation-script.desktop"
 if [ -f  "$launchCustomizationScriptPath" ]

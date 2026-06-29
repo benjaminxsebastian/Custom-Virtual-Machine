@@ -18,18 +18,18 @@ while ! pgrep "firefox" > /dev/null; do
   echo 'Waiting for firefox to initialize ...'
   sleep 1
 done
-firefoxFolder=`grep -i "default-release" .mozilla/firefox/installs.ini | cut -d '=' -f 2`
-firefoxFiles=`find "/home/sbenjamin/.mozilla/firefox/$firefoxFolder" -maxdepth 1 -type f | wc -l`
+firefoxFolder=`grep -i "default-release" .config/mozilla/firefox/installs.ini | cut -d '=' -f 2`
+firefoxFiles=`find "/home/<USER NAME>/.config/mozilla/firefox/$firefoxFolder" -maxdepth 1 -type f | wc -l`
 while [ "$firefoxFiles" -le "30" ]; do
   echo "Waiting for firefox to finish initializing ..."
   sleep 1
-  firefoxFolder=`grep -i "default-release" .mozilla/firefox/installs.ini | cut -d '=' -f 2`
-  firefoxFiles=`find "/home/sbenjamin/.mozilla/firefox/$firefoxFolder" -maxdepth 1 -type f | wc -l`
+  firefoxFolder=`grep -i "default-release" .config/mozilla/firefox/installs.ini | cut -d '=' -f 2`
+  firefoxFiles=`find "/home/<USER NAME>/.config/mozilla/firefox/$firefoxFolder" -maxdepth 1 -type f | wc -l`
 done
 sleep 3
 killall firefox
 echo 'user_pref("browser.startup.homepage", "https://www.google.com");' > "/home/<USER NAME>/user.js"
-mv -v -f "/home/<USER NAME>/user.js" /home/<USER NAME>/.mozilla/firefox/*.default-release
+mv -v -f "/home/<USER NAME>/user.js" /home/<USER NAME>/.config/mozilla/firefox/*.default-release
 firefox &
 sleep 10
 killall firefox

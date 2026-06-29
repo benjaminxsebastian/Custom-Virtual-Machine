@@ -22,6 +22,9 @@ setup-user -a -f "Benjamin Sebastian" <USER NAME>
 
 source "/home/customizations/custom-scripts/install-additional-packages.sh"
 source "/home/customizations/custom-scripts/install-openvpn.sh"
+apk add qemu-guest-agent
+rc-update add qemu-guest-agent default
+rc-service qemu-guest-agent start
 
 addgroup <USER NAME> abuild
 
@@ -90,6 +93,7 @@ EOF
 source "/home/<USER NAME>/custom-scripts/install-pulseaudio.sh" "$pulseaudioSourceDirectoryPath"
 
 source "/home/<USER NAME>/custom-scripts/install-tailscale.sh"
+apk add socat
 
 echo 'permit nopass <USER NAME> as root' >> "/etc/doas.d/doas.conf"
 

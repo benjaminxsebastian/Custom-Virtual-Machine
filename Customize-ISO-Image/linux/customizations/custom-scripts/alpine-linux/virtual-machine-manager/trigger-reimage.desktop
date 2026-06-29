@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Reimage
+Comment=Signals host to reimage this machine
+Exec=/home/<USER NAME>/trigger-reimage.sh
+Icon=utilities-terminal
+Terminal=true
